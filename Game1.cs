@@ -9,6 +9,8 @@ public class Game1 : Game
     private GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
 
+    Board board;
+
     public Game1()
     {
         _graphics = new GraphicsDeviceManager(this);
@@ -18,7 +20,6 @@ public class Game1 : Game
 
     protected override void Initialize()
     {
-        // TODO: Add your initialization logic here
 
         base.Initialize();
     }
@@ -26,8 +27,9 @@ public class Game1 : Game
     protected override void LoadContent()
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
+        Dice.Init(_spriteBatch, Content.Load<Texture2D>("Dice"));
+        board = new Board();
 
-        // TODO: use this.Content to load your game content here
     }
 
     protected override void Update(GameTime gameTime)
@@ -45,6 +47,9 @@ public class Game1 : Game
         GraphicsDevice.Clear(Color.CornflowerBlue);
 
         // TODO: Add your drawing code here
+        _spriteBatch.Begin();
+        board.Draw(_spriteBatch);
+        _spriteBatch.End();
 
         base.Draw(gameTime);
     }

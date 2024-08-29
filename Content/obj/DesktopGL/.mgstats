@@ -1,0 +1,2 @@
+Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Size,Build Seconds
+"g:/Programs/C#/MonoGame/Boggle/Content/Dice.png","g:/Programs/C#/MonoGame/Boggle/Content/bin/DesktopGL/Dice.xnb","TextureProcessor","Texture2DContent",42353,1331285,0.2538435
