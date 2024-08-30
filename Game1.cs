@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -11,6 +10,7 @@ public class Game1 : Game
     private SpriteBatch _spriteBatch;
 
     Board board;
+    MouseExt mouseExt = MouseExt.Instance;
 
     public Game1()
     {
@@ -28,7 +28,7 @@ public class Game1 : Game
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
         Dice.Init(_spriteBatch, Content.Load<Texture2D>("Dice"));
-		Texture2D primitiveTexture = new Texture2D(GraphicsDevice, 1, 1);
+		Texture2D primitiveTexture = new(GraphicsDevice, 1, 1);
 		primitiveTexture.SetData(new[] {Color.White});
         board = new Board(primitiveTexture);
 
@@ -39,7 +39,7 @@ public class Game1 : Game
         if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
             Exit();
 
-        // TODO: Add your update logic here
+        mouseExt.Update();
 		board.Update(gameTime);
 
         base.Update(gameTime);
@@ -49,7 +49,6 @@ public class Game1 : Game
     {
         GraphicsDevice.Clear(Color.CornflowerBlue);
 
-        // TODO: Add your drawing code here
         _spriteBatch.Begin();
 		board.Draw(_spriteBatch);
         _spriteBatch.End();
