@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net.Mime;
 using System.Net.Quic;
 using System.Reflection.Metadata;
+using System.Security.Cryptography.X509Certificates;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -19,6 +20,7 @@ public class Dice
 	//todo letter score values
 	static Texture2D diceTexture;
 	private static Rectangle[] letter_rects = new Rectangle[26];
+	private static Rectangle shuffleRect = new Rectangle(160, 80, 80, 80);
 	static readonly Random rand = new();
 	static SpriteBatch spriteBatch;
 
@@ -39,6 +41,11 @@ public class Dice
 
 	public Dice()
 	{
+		ChooseLetter();
+	}
+
+	public void ChooseLetter()
+	{
 		letterIndex = MathExt.WeightedRandomIndex(letters, letter_weights, weightSum);
 		quad = letter_rects[letterIndex];
 	}
@@ -47,4 +54,18 @@ public class Dice
 	{
 		spriteBatch.Draw(diceTexture, new Vector2(x * squareImgDiceSize, y * squareImgDiceSize), quad, Color.White);
 	}
+
+
+	public void MakeShuffleDice()
+	{
+		quad = shuffleRect;
+	}
+
+	public Rectangle getDrawPosition(int x, int y)
+	{
+		return new Rectangle(x * squareImgDiceSize, y * squareImgDiceSize, squareImgDiceSize, squareImgDiceSize);
+	}
+
+	public int GetImageSize => squareImgDiceSize;
+	public Rectangle GetQuad => quad;
 }

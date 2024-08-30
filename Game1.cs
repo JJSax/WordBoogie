@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Diagnostics;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -20,7 +21,6 @@ public class Game1 : Game
 
     protected override void Initialize()
     {
-
         base.Initialize();
     }
 
@@ -28,7 +28,9 @@ public class Game1 : Game
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
         Dice.Init(_spriteBatch, Content.Load<Texture2D>("Dice"));
-        board = new Board();
+		Texture2D primitiveTexture = new Texture2D(GraphicsDevice, 1, 1);
+		primitiveTexture.SetData(new[] {Color.White});
+        board = new Board(primitiveTexture);
 
     }
 
@@ -38,6 +40,7 @@ public class Game1 : Game
             Exit();
 
         // TODO: Add your update logic here
+		board.Update(gameTime);
 
         base.Update(gameTime);
     }
@@ -48,7 +51,7 @@ public class Game1 : Game
 
         // TODO: Add your drawing code here
         _spriteBatch.Begin();
-        board.Draw(_spriteBatch);
+		board.Draw(_spriteBatch);
         _spriteBatch.End();
 
         base.Draw(gameTime);
