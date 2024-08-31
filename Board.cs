@@ -15,7 +15,7 @@ public class Board
 	const int height = 4;
 
 	Dice[,] board;
-    readonly Dice shuffleDie;
+	readonly Dice shuffleDie;
 	private Texture2D sandTexture;
 	private Rectangle sandTimer;
 	private Rectangle sand;
@@ -55,7 +55,8 @@ public class Board
 	public void AddContent(SpriteFont inFont) { smallFont = inFont; }
 	public void AddContent(Texture2D timerTexture) { sandTexture = timerTexture; }
 
-	public void AddContent(Texture2D timerTexture, SpriteFont LargeFont, SpriteFont SmallFont) {
+	public void AddContent(Texture2D timerTexture, SpriteFont LargeFont, SpriteFont SmallFont)
+	{
 		AddContent(LargeFont, true);
 		AddContent(SmallFont);
 		AddContent(timerTexture);
@@ -73,7 +74,7 @@ public class Board
 			currentWord = "";
 		}
 		else if (key == Keys.Back && (keys.IsKeyDown(Keys.LeftControl) || keys.IsKeyDown(Keys.RightControl)) && currentWord.Length > 0)
-		// Ctrl+Backspace
+			// Ctrl+Backspace
 			currentWord = "";
 		else if (key == Keys.Back && currentWord.Length > 0)
 			currentWord = currentWord.Substring(0, currentWord.Length - 1);
@@ -130,15 +131,19 @@ public class Board
 		spriteBatch.Draw(sandTexture, sand, Color.Yellow);
 		shuffleDie.Draw(0, height);
 
-
-		// Vector2 position = new Vector2(gameWindow.ClientBounds.Width / 2, gameWindow.ClientBounds.Height / 2);
 		Vector2 position = new Vector2(5, gameWindow.ClientBounds.Height - 56);
 		spriteBatch.DrawString(largeFont, currentWord, position, Color.Black);
 
 		int ind = 0;
+		int leftX = 340;
+		int columnCapacity = 20;
+		int textHeight = 20;
 		foreach (string entry in wordList)
 		{
-			Vector2 pos = new(340, ind * 20);
+			Vector2 pos = new(
+				leftX + (ind / columnCapacity * 150),
+				ind % columnCapacity * textHeight
+			);
 			spriteBatch.DrawString(smallFont, entry, pos, Color.Black);
 			ind++;
 		}
