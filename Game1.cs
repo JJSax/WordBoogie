@@ -6,53 +6,55 @@ namespace Boggle;
 
 public class Game1 : Game
 {
-    private GraphicsDeviceManager _graphics;
-    private SpriteBatch _spriteBatch;
+	private GraphicsDeviceManager _graphics;
+	private SpriteBatch _spriteBatch;
 
-    Board board;
-    MouseExt mouseExt = MouseExt.Instance;
+	Board board;
+	MouseExt mouseExt = MouseExt.Instance;
 
-    public Game1()
-    {
-        _graphics = new GraphicsDeviceManager(this);
-        Content.RootDirectory = "Content";
-        IsMouseVisible = true;
-    }
+	public Game1()
+	{
+		_graphics = new GraphicsDeviceManager(this);
+		Content.RootDirectory = "Content";
+		IsMouseVisible = true;
+	}
 
-    protected override void Initialize()
-    {
-        base.Initialize();
-    }
+	protected override void Initialize()
+	{
+		base.Initialize();
+	}
 
-    protected override void LoadContent()
-    {
-        _spriteBatch = new SpriteBatch(GraphicsDevice);
-        Dice.Init(_spriteBatch, Content.Load<Texture2D>("Dice"));
+	protected override void LoadContent()
+	{
+		_spriteBatch = new SpriteBatch(GraphicsDevice);
+		Dice.Init(_spriteBatch, Content.Load<Texture2D>("Dice"));
 		Texture2D primitiveTexture = new(GraphicsDevice, 1, 1);
 		primitiveTexture.SetData(new[] {Color.White});
-        board = new Board(primitiveTexture);
+		board = new Board(Window);
+		SpriteFont largeFont = Content.Load<SpriteFont>("RobotoMono-Medium-large");
+		SpriteFont smallFont = Content.Load<SpriteFont>("RobotoMono-Medium-small");
+		board.AddContent(primitiveTexture, largeFont, smallFont);
+	}
 
-    }
+	protected override void Update(GameTime gameTime)
+	{
+		if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+			Exit();
 
-    protected override void Update(GameTime gameTime)
-    {
-        if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-            Exit();
-
-        mouseExt.Update();
+		mouseExt.Update();
 		board.Update(gameTime);
 
-        base.Update(gameTime);
-    }
+		base.Update(gameTime);
+	}
 
-    protected override void Draw(GameTime gameTime)
-    {
-        GraphicsDevice.Clear(Color.CornflowerBlue);
+	protected override void Draw(GameTime gameTime)
+	{
+		GraphicsDevice.Clear(Color.CornflowerBlue);
 
-        _spriteBatch.Begin();
+		_spriteBatch.Begin();
 		board.Draw(_spriteBatch);
-        _spriteBatch.End();
+		_spriteBatch.End();
 
-        base.Draw(gameTime);
-    }
+		base.Draw(gameTime);
+	}
 }

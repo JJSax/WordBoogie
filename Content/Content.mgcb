@@ -25,3 +25,17 @@
 /processorParam:TextureFormat=Color
 /build:Dice.png
 
+#begin RobotoMono-Medium-large.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:RobotoMono-Medium-large.spritefont
+
+#begin RobotoMono-Medium-small.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:RobotoMono-Medium-small.spritefont
+

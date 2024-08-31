@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <SourceFile>g:/Programs/C#/MonoGame/Boggle/Content/RobotoMono-Medium-small.spritefont</SourceFile>
+  <SourceTime>2024-08-31T16:03:32.012826-06:00</SourceTime>
+  <DestFile>g:/Programs/C#/MonoGame/Boggle/Content/bin/DesktopGL/RobotoMono-Medium-small.xnb</DestFile>
+  <DestTime>2024-08-31T16:29:50.2727993-06:00</DestTime>
+  <Importer>FontDescriptionImporter</Importer>
+  <ImporterTime>2024-08-16T11:05:56-06:00</ImporterTime>
+  <Processor>FontDescriptionProcessor</Processor>
+  <ProcessorTime>2024-08-16T11:05:56-06:00</ProcessorTime>
+  <Parameters>
+    <Key>PremultiplyAlpha</Key>
+    <Value>True</Value>
+  </Parameters>
+  <Parameters>
+    <Key>TextureFormat</Key>
+    <Value>Compressed</Value>
+  </Parameters>
+  <Dependencies />
+  <BuildAsset />
+  <BuildOutput />
+</PipelineBuildEvent>

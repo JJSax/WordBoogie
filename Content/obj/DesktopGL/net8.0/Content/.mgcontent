@@ -5,8 +5,12 @@
   <Config />
   <SourceFiles>
     <File>g:/Programs/C#/MonoGame/Boggle/Content/Dice.png</File>
+    <File>g:/Programs/C#/MonoGame/Boggle/Content/RobotoMono-Medium-large.spritefont</File>
+    <File>g:/Programs/C#/MonoGame/Boggle/Content/RobotoMono-Medium-small.spritefont</File>
   </SourceFiles>
   <DestFiles>
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
   </DestFiles>
 </SourceFileCollection>
