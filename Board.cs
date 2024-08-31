@@ -21,7 +21,7 @@ public class Board
 	private Rectangle sand;
 	private TimeSpan sandRemaining;
 	private static GameWindow gameWindow;
-	private List<string> wordList = [""];
+	private List<string> wordList = [];
 	private string currentWord = "";
 	private SpriteFont largeFont;
 	private SpriteFont smallFont;
@@ -57,6 +57,7 @@ public class Board
 
 	public void AddContent(Texture2D timerTexture, SpriteFont LargeFont, SpriteFont SmallFont) {
 		AddContent(LargeFont, true);
+		AddContent(SmallFont);
 		AddContent(timerTexture);
 	}
 
@@ -99,6 +100,7 @@ public class Board
 			}
 		}
 		sandRemaining = TimeSpan.FromMinutes(3);
+		wordList.Clear();
 	}
 
 	private void UpdateSand()
@@ -132,6 +134,14 @@ public class Board
 		// Vector2 position = new Vector2(gameWindow.ClientBounds.Width / 2, gameWindow.ClientBounds.Height / 2);
 		Vector2 position = new Vector2(5, gameWindow.ClientBounds.Height - 56);
 		spriteBatch.DrawString(largeFont, currentWord, position, Color.Black);
+
+		int ind = 0;
+		foreach (string entry in wordList)
+		{
+			Vector2 pos = new(340, ind * 20);
+			spriteBatch.DrawString(smallFont, entry, pos, Color.Black);
+			ind++;
+		}
 	}
 
 }
