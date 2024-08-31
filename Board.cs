@@ -135,7 +135,7 @@ public class Board
 		spriteBatch.DrawString(largeFont, currentWord, position, Color.Black);
 
 		int ind = 0;
-		int leftX = 340;
+		int leftX = width * 80 + 20;
 		int columnCapacity = 20;
 		int textHeight = 20;
 		foreach (string entry in wordList)
