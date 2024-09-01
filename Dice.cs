@@ -7,8 +7,8 @@ namespace Boggle;
 public class Dice
 {
 	const int squareImgDiceSize = 80;
-    static readonly string[] letters = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Qu","R","S","T","U","V","W","X","Y","Z"];
-	static readonly int[] letter_weights = [132,24,44,68,276,36,32,98,112,2,12,64,38,107,120,30,2,96,101,144,45,16,38,2,30,1];
+	static readonly string[] letters = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Qu","R","S","T","U","V","W","X","Y","Z"];
+	static readonly int[] letter_weights = [78,20,40,38,110,14,30,23,86,2,10,53,27,72,61,28,2,73,87,67,33,10,9,3,16,4];
 	static readonly int weightSum = letter_weights.Sum();
 	//todo letter score values
 	static Texture2D diceTexture;
@@ -19,6 +19,7 @@ public class Dice
 	private Rectangle quad;
 
 	int letterIndex;
+	public int GetLetterIndex => letterIndex;
 
 	public static void Init(SpriteBatch sprite_batch, Texture2D dice_texture) {
 		spriteBatch = sprite_batch;
