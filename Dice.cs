@@ -26,7 +26,7 @@ public class Dice
 		diceTexture = dice_texture;
 
 		letter_rects = new Rectangle[letters.Length];
-		for (int i = 0; i < letters.Length - 1; i++)
+		for (int i = 0; i < letters.Length; i++)
 		{
 			letter_rects[i] = new Rectangle(i * 80, 0, 80, 80);
 		}
