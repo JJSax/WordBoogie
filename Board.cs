@@ -26,7 +26,7 @@ public class Board
 	private SpriteFont largeFont;
 	private SpriteFont smallFont;
 	private readonly BoggleSolver solver;
-    readonly HashSet<string> foundWords;
+    HashSet<string> allWords;
 
 	public Board(GameWindow window)
 	{
@@ -54,11 +54,16 @@ public class Board
 
 		string filePath = "words_alpha_jj.txt";
 		solver = new(File.ReadLines(filePath));
-		foundWords = solver.FindWords(board);
+		FindWords();
+	}
 
-		foreach (var word in foundWords)
+	private void FindWords()
+	{
+		allWords = solver.FindWords(board);
+
+		foreach (string word in allWords)
 		{
-			Debug.WriteLine(word);
+			Debug.WriteLine($"Board contains word: \"{word}\"");
 		}
 	}
 
@@ -81,7 +86,8 @@ public class Board
 
 		if (key == Keys.Enter && currentWord.Length > 0)
 		{
-			wordList.Add(currentWord);
+			if (allWords.Contains(currentWord) && !wordList.Contains(currentWord) && sandRemaining > TimeSpan.Zero)
+				wordList.Add(currentWord);
 			currentWord = "";
 		}
 		else if (key == Keys.Back && (keys.IsKeyDown(Keys.LeftControl) || keys.IsKeyDown(Keys.RightControl)) && currentWord.Length > 0)
@@ -113,6 +119,8 @@ public class Board
 		}
 		sandRemaining = TimeSpan.FromMinutes(3);
 		wordList.Clear();
+
+		FindWords();
 	}
 
 	private void UpdateSand()
