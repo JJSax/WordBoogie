@@ -1,5 +1,3 @@
-using System;
-using System.Data;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
@@ -10,7 +8,7 @@ public class MouseExt
 
 	private static readonly MouseExt _instance = new();
 
-    private MouseState state = new();
+	private MouseState state = new();
 	private MouseState _previousState = new();
 
 	public MouseState CurrentState => state;

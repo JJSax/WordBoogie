@@ -27,12 +27,15 @@ public class Game1 : Game
 	protected override void LoadContent()
 	{
 		_spriteBatch = new SpriteBatch(GraphicsDevice);
+
 		Dice.Init(_spriteBatch, Content.Load<Texture2D>("Dice"));
-		Texture2D primitiveTexture = new(GraphicsDevice, 1, 1);
-		primitiveTexture.SetData(new[] {Color.White});
-		board = new Board(Window);
+
 		SpriteFont largeFont = Content.Load<SpriteFont>("RobotoMono-Medium-large");
 		SpriteFont smallFont = Content.Load<SpriteFont>("RobotoMono-Medium-small");
+		Texture2D primitiveTexture = new(GraphicsDevice, 1, 1);
+		primitiveTexture.SetData(new[] {Color.White});
+
+		board = new Board(Window);
 		board.AddContent(primitiveTexture, largeFont, smallFont);
 	}
 

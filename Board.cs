@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
+using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -14,17 +14,19 @@ public class Board
 	const int width = 4;
 	const int height = 4;
 
-	Dice[,] board;
+    readonly Dice[,] board;
 	readonly Dice shuffleDie;
 	private Texture2D sandTexture;
 	private Rectangle sandTimer;
 	private Rectangle sand;
 	private TimeSpan sandRemaining;
 	private static GameWindow gameWindow;
-	private List<string> wordList = [];
+	private readonly List<string> wordList = [];
 	private string currentWord = "";
 	private SpriteFont largeFont;
 	private SpriteFont smallFont;
+	private readonly BoggleSolver solver;
+    readonly HashSet<string> foundWords;
 
 	public Board(GameWindow window)
 	{
@@ -49,6 +51,15 @@ public class Board
 
 		gameWindow = window;
 		gameWindow.TextInput += TextInput;
+
+		string filePath = "words_alpha_jj.txt";
+		solver = new(File.ReadLines(filePath));
+		foundWords = solver.FindWords(board);
+
+		foreach (var word in foundWords)
+		{
+			Debug.WriteLine(word);
+		}
 	}
 
 	public void AddContent(SpriteFont inFont, bool isLarge) { largeFont = inFont; }
@@ -82,7 +93,7 @@ public class Board
 			currentWord += char.ToUpper(args.Character);
 
 		// Optional: Debug output
-		Debug.WriteLine($"Current Word: {currentWord}");
+		// Debug.WriteLine($"Current Word: {currentWord}");
 	}
 
 	private void AttemptShuffle(Point position)
@@ -131,13 +142,13 @@ public class Board
 		spriteBatch.Draw(sandTexture, sand, Color.Yellow);
 		shuffleDie.Draw(0, height);
 
-		Vector2 position = new Vector2(5, gameWindow.ClientBounds.Height - 56);
+		Vector2 position = new(5, gameWindow.ClientBounds.Height - 56);
 		spriteBatch.DrawString(largeFont, currentWord, position, Color.Black);
 
 		int ind = 0;
-		int leftX = width * 80 + 20;
-		int columnCapacity = 20;
-		int textHeight = 20;
+		const int leftX = width * 80 + 20;
+		const int columnCapacity = 20;
+		const int textHeight = 20;
 		foreach (string entry in wordList)
 		{
 			Vector2 pos = new(
@@ -148,5 +159,6 @@ public class Board
 			ind++;
 		}
 	}
+
 
 }
