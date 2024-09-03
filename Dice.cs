@@ -6,26 +6,26 @@ namespace Boggle;
 
 public class Dice
 {
-	const int squareImgDiceSize = 80;
-	static readonly char[] letters = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
-	static readonly int[] letter_weights = [78,20,40,38,110,14,30,23,86,2,10,53,27,72,61,28,2,73,87,67,33,10,9,3,16,4];
-	static readonly int weightSum = letter_weights.Sum();
+	private const int squareImgDiceSize = 80;
+	private static readonly char[] alphabet = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
+	private static readonly int[] letter_weights = [78,20,40,38,110,14,30,23,86,2,10,53,27,72,61,28,2,73,87,67,33,10,9,3,16,4];
+	private static readonly int weightSum = letter_weights.Sum();
 	//todo letter score values
-	static Texture2D diceTexture;
+	private static Texture2D diceTexture;
 	private static Rectangle[] letter_rects = new Rectangle[26];
 	private static Rectangle shuffleRect = new(160, 80, 80, 80);
-	static SpriteBatch spriteBatch;
+	private static SpriteBatch spriteBatch;
 
 	private Rectangle quad;
 
-	private int letterIndex;
+	public int LetterIndex { get; private set; }
 
 	public static void Init(SpriteBatch sprite_batch, Texture2D dice_texture) {
 		spriteBatch = sprite_batch;
 		diceTexture = dice_texture;
 
-		letter_rects = new Rectangle[letters.Length];
-		for (int i = 0; i < letters.Length; i++)
+		letter_rects = new Rectangle[alphabet.Length];
+		for (int i = 0; i < alphabet.Length; i++)
 		{
 			letter_rects[i] = new Rectangle(i * 80, 0, 80, 80);
 		}
@@ -35,8 +35,8 @@ public class Dice
 
 	public void ChooseLetter()
 	{
-		letterIndex = MathExt.WeightedRandomIndex(letters, letter_weights, weightSum);
-		quad = letter_rects[letterIndex];
+		LetterIndex = MathExt.WeightedRandomIndex(alphabet, letter_weights, weightSum);
+		quad = letter_rects[LetterIndex];
 	}
 
 	public void Draw(int x, int y)
@@ -52,8 +52,7 @@ public class Dice
 	}
 
 	public void MakeShuffleDice() => quad = shuffleRect;
-	public int GetLetterIndex => letterIndex;
-	public char GetLetter => letters[letterIndex];
+	public char GetLetter => alphabet[LetterIndex];
 	public static int GetImageSize => squareImgDiceSize;
 	public Rectangle GetQuad => quad;
 }

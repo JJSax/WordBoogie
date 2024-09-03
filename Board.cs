@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -27,6 +28,9 @@ public class Board
 	private SpriteFont smallFont;
 	private readonly BoggleSolver solver;
     HashSet<string> allWords;
+
+	private int score = 0;
+	private readonly int[] wordLengthScores = [0, 0, 1, 1, 2, 3, 4, 5, 6, 7];
 
 	public Board(GameWindow window)
 	{
@@ -80,14 +84,16 @@ public class Board
 
 	private void TextInput(object sender, TextInputEventArgs args)
 	{
-		// Get the pressed key
 		Keys key = args.Key;
 		KeyboardState keys = Keyboard.GetState();
 
 		if (key == Keys.Enter && currentWord.Length > 0)
 		{
 			if (allWords.Contains(currentWord) && !wordList.Contains(currentWord) && sandRemaining > TimeSpan.Zero)
+			{
 				wordList.Add(currentWord);
+				score += wordLengthScores.ElementAt(currentWord.Length);
+			}
 			currentWord = "";
 		}
 		else if (key == Keys.Back && (keys.IsKeyDown(Keys.LeftControl) || keys.IsKeyDown(Keys.RightControl)) && currentWord.Length > 0)
@@ -152,6 +158,9 @@ public class Board
 
 		Vector2 position = new(5, gameWindow.ClientBounds.Height - 56);
 		spriteBatch.DrawString(largeFont, currentWord, position, Color.Black);
+
+		Vector2 scorePosition = new(sandTimer.Right + 10, Dice.GetImageSize * height);
+		spriteBatch.DrawString(smallFont, $"Score: {score}", scorePosition, Color.Black);
 
 		int ind = 0;
 		const int leftX = width * 80 + 20;
