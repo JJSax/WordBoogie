@@ -1,13 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
-using MonoGame.Extended.ECS;
 
 namespace Boggle;
 
@@ -27,12 +25,23 @@ public class Board
 	private SpriteFont largeFont;
 	private SpriteFont smallFont;
 	private readonly BoggleSolver solver;
+
+	/// <summary>
+	/// The list of words in this game that the player found.
+	/// </summary>
 	private readonly List<string> wordList = [];
 	private string currentWord = "";
-    HashSet<string> allWords;
+
+	/// <summary>
+	/// All the words contained on this particular board.
+	/// </summary>
+    List<string> allWords;
 
 	private int score = 0;
 	private readonly int[] wordLengthScores = [0, 0, 1, 1, 2, 3, 4, 5, 6, 7];
+
+	BoggleState gameState;
+	private int aiWordIndex = 0;
 
 	public Board(GameWindow window)
 	{
@@ -57,26 +66,23 @@ public class Board
 
 		gameWindow = window;
 		gameWindow.TextInput += TextInput;
+		gameWindow.KeyDown += KeyboardInput;
 
 		string filePath = "words_alpha_jj.txt";
 		solver = new(File.ReadLines(filePath));
 		FindWords();
+
+		gameState = BoggleState.playing;
 	}
 
 	private void FindWords()
 	{
-		allWords = solver.FindWords(board);
-
-		foreach (string word in allWords)
-		{
-			Debug.WriteLine($"Board contains word: \"{word}\"");
-		}
+		allWords = solver.FindWords(board).ToList();
 	}
 
 	public void AddContent(SpriteFont inFont, bool isLarge) { largeFont = inFont; }
 	public void AddContent(SpriteFont inFont) { smallFont = inFont; }
 	public void AddContent(Texture2D timerTexture) { sandTexture = timerTexture; }
-
 	public void AddContent(Texture2D timerTexture, SpriteFont LargeFont, SpriteFont SmallFont)
 	{
 		AddContent(LargeFont, true);
@@ -84,14 +90,34 @@ public class Board
 		AddContent(timerTexture);
 	}
 
+	private void KeyboardInput(object sender, InputKeyEventArgs args)
+	{
+		if (gameState != BoggleState.scoreNegotiation) return;
+
+		Keys key = args.Key;
+		int wordCount = allWords.Count;
+
+		switch (key)
+		{
+			case Keys.Up:
+				Common.Wrap(++aiWordIndex, 0, wordCount, out aiWordIndex);
+				break;
+			case Keys.Down:
+				Common.Wrap(--aiWordIndex, 0, wordCount, out aiWordIndex);
+				break;
+		}
+	}
+
 	private void TextInput(object sender, TextInputEventArgs args)
 	{
+		if (gameState != BoggleState.playing) return;
+
 		Keys key = args.Key;
 		KeyboardState keys = Keyboard.GetState();
 
 		if (key == Keys.Enter && currentWord.Length > 0)
 		{
-			if (allWords.Contains(currentWord) && !wordList.Contains(currentWord) && sandRemaining > TimeSpan.Zero)
+			if (allWords.Contains(currentWord) && !wordList.Contains(currentWord))
 			{
 				wordList.Add(currentWord);
 				score += wordLengthScores.ElementAt(currentWord.Length);
@@ -129,6 +155,7 @@ public class Board
 		wordList.Clear();
 
 		FindWords();
+		gameState = BoggleState.playing;
 	}
 
 	private void UpdateSand()
@@ -140,8 +167,12 @@ public class Board
 
 	public void Update(GameTime gameTime)
 	{
+
+		if (gameState != BoggleState.playing) return;
 		sandRemaining -= gameTime.ElapsedGameTime;
 		UpdateSand();
+
+		if (sandRemaining <= TimeSpan.Zero) gameState = BoggleState.scoreNegotiation;
 	}
 
 	public void Draw(SpriteBatch spriteBatch)
@@ -165,17 +196,20 @@ public class Board
 		spriteBatch.DrawString(smallFont, $"Score: {score}", scorePosition, Color.Black);
 
 		//! TEST LINE
-		int diceSize = Dice.GetImageSize;
-		Vector2 offset = new(diceSize/2, diceSize/2);
-		string word = solver.FoundWords.First();
-		if (word != null){
-			Stack<Vector2> copyVector = new(solver.Paths[word]);
-			Vector2 startPoint = copyVector.Pop() * diceSize;
-			for (int i = 1; i < word.Length; i++)
-			{
-				Vector2 endPoint = copyVector.Pop() * diceSize;
-				spriteBatch.DrawLine(startPoint + offset, endPoint + offset, Color.Green, 5);
-				startPoint = endPoint;
+		if (gameState == BoggleState.scoreNegotiation)
+		{
+			int diceSize = Dice.GetImageSize;
+			Vector2 offset = new(diceSize/2, diceSize/2);
+			string word = solver.FoundWords.ElementAt(aiWordIndex);
+			if (word != null){
+				Stack<Vector2> copyVector = new(solver.Paths[word]);
+				Vector2 startPoint = copyVector.Pop() * diceSize;
+				for (int i = 1; i < word.Length; i++)
+				{
+					Vector2 endPoint = copyVector.Pop() * diceSize;
+					spriteBatch.DrawLine(startPoint + offset, endPoint + offset, Color.Green, 5);
+					startPoint = endPoint;
+				}
 			}
 		}
 
