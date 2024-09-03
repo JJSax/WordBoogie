@@ -6,6 +6,8 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using MonoGame.Extended;
+using MonoGame.Extended.ECS;
 
 namespace Boggle;
 
@@ -22,11 +24,11 @@ public class Board
 	private Rectangle sand;
 	private TimeSpan sandRemaining;
 	private static GameWindow gameWindow;
-	private readonly List<string> wordList = [];
-	private string currentWord = "";
 	private SpriteFont largeFont;
 	private SpriteFont smallFont;
 	private readonly BoggleSolver solver;
+	private readonly List<string> wordList = [];
+	private string currentWord = "";
     HashSet<string> allWords;
 
 	private int score = 0;
@@ -161,6 +163,21 @@ public class Board
 
 		Vector2 scorePosition = new(sandTimer.Right + 10, Dice.GetImageSize * height);
 		spriteBatch.DrawString(smallFont, $"Score: {score}", scorePosition, Color.Black);
+
+		//! TEST LINE
+		int diceSize = Dice.GetImageSize;
+		Vector2 offset = new(diceSize/2, diceSize/2);
+		string word = solver.FoundWords.First();
+		if (word != null){
+			Stack<Vector2> copyVector = new(solver.Paths[word]);
+			Vector2 startPoint = copyVector.Pop() * diceSize;
+			for (int i = 1; i < word.Length; i++)
+			{
+				Vector2 endPoint = copyVector.Pop() * diceSize;
+				spriteBatch.DrawLine(startPoint + offset, endPoint + offset, Color.Green, 5);
+				startPoint = endPoint;
+			}
+		}
 
 		int ind = 0;
 		const int leftX = width * 80 + 20;
