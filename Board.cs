@@ -40,7 +40,7 @@ public class Board
     List<string> allWords;
 
 	private int score = 0;
-	private readonly int[] wordLengthScores = [0, 0, 1, 1, 2, 3, 4, 5, 6, 7];
+	private readonly int[] wordLengthScores = [0, 0, 1, 1, 1, 2, 3, 4, 5, 6, 7];
 
 	BoggleState gameState;
 	private int aiWordIndex = 0;
@@ -182,6 +182,36 @@ public class Board
 		if (sandRemaining <= TimeSpan.Zero) gameState = BoggleState.scoreNegotiation;
 	}
 
+	private void DrawArrows(SpriteBatch spriteBatch)
+	{
+		if (gameState != BoggleState.scoreNegotiation) return;
+
+		string word = allWords.ElementAt(aiWordIndex);
+		if (word == null) return;
+
+		int diceSize = Dice.GetImageSize;
+		Vector2 offset = new(diceSize/2, diceSize/2);
+		Stack<Vector2> copyVector = new(solver.Paths[word]);
+		Vector2 startPoint = copyVector.Pop();
+		for (int i = 1; i < word.Length; i++)
+		{
+			Vector2 endPoint = copyVector.Pop();
+			Vector2 midPoint = (startPoint + endPoint) / 2 * diceSize + offset;
+			spriteBatch.DrawCircle(midPoint, 4, 20, Color.Magenta, 1f, 0f);
+			Rectangle midRect = new(
+				(int)midPoint.X,
+				(int)midPoint.Y,
+				diceSize, diceSize
+			);
+			float angle = (endPoint - startPoint).ToAngle();
+			spriteBatch.Draw(
+				diceTexture, midRect, arrowTexture,
+				Color.White, angle, offset, SpriteEffects.None, 0f
+			);
+			startPoint = endPoint;
+		}
+	}
+
 	public void Draw(SpriteBatch spriteBatch)
 	{
 		for (int i = 0; i < width; i++)
@@ -202,34 +232,7 @@ public class Board
 		Vector2 scorePosition = new(sandTimer.Right + 10, Dice.GetImageSize * height);
 		spriteBatch.DrawString(smallFont, $"Score: {score}", scorePosition, Color.Black);
 
-		//! TEST LINE
-		if (gameState == BoggleState.scoreNegotiation)
-		{
-			int diceSize = Dice.GetImageSize;
-			Vector2 offset = new(diceSize/2, diceSize/2);
-			string word = allWords.ElementAt(aiWordIndex);
-			if (word != null){
-				Stack<Vector2> copyVector = new(solver.Paths[word]);
-				Vector2 startPoint = copyVector.Pop();
-				for (int i = 1; i < word.Length; i++)
-				{
-					Vector2 endPoint = copyVector.Pop();
-					Vector2 midPoint = (startPoint + endPoint) / 2 * diceSize + offset;
-					spriteBatch.DrawCircle(midPoint, 4, 20, Color.Magenta, 1f, 0f);
-					Rectangle midRect = new(
-						(int)midPoint.X,
-						(int)midPoint.Y,
-						diceSize, diceSize
-					);
-					float angle = (endPoint - startPoint).ToAngle();
-					spriteBatch.Draw(
-						diceTexture, midRect, arrowTexture,
-						Color.White, angle, offset, SpriteEffects.None, 0f
-					);
-					startPoint = endPoint;
-				}
-			}
-		}
+		DrawArrows(spriteBatch);
 
 		int ind = 0;
 		const int leftX = width * 80 + 20;
