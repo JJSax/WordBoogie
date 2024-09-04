@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Net.Mime;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -28,14 +29,15 @@ public class Game1 : Game
 	{
 		_spriteBatch = new SpriteBatch(GraphicsDevice);
 
-		Dice.Init(_spriteBatch, Content.Load<Texture2D>("Dice"));
+		Texture2D dice = Content.Load<Texture2D>("Dice");
+		Dice.Init(_spriteBatch, dice);
 
 		SpriteFont largeFont = Content.Load<SpriteFont>("RobotoMono-Medium-large");
 		SpriteFont smallFont = Content.Load<SpriteFont>("RobotoMono-Medium-small");
 		Texture2D primitiveTexture = new(GraphicsDevice, 1, 1);
 		primitiveTexture.SetData(new[] {Color.White});
 
-		board = new Board(Window);
+		board = new Board(Window, dice);
 		board.AddContent(primitiveTexture, largeFont, smallFont);
 	}
 

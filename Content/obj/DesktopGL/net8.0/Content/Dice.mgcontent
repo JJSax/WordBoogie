@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <SourceFile>g:/Programs/C#/MonoGame/Boggle/Content/Dice.png</SourceFile>
-  <SourceTime>2024-08-29T21:08:58.8215474-06:00</SourceTime>
+  <SourceTime>2024-09-03T16:50:16.7568115-06:00</SourceTime>
   <DestFile>g:/Programs/C#/MonoGame/Boggle/Content/bin/DesktopGL/Content/Dice.xnb</DestFile>
-  <DestTime>2024-08-29T21:27:06.1878568-06:00</DestTime>
+  <DestTime>2024-09-03T22:15:05.8628441-06:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2024-08-16T11:05:56-06:00</ImporterTime>
   <Processor>TextureProcessor</Processor>

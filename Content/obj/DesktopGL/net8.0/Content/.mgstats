@@ -1,4 +1,4 @@
 Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Size,Build Seconds
-"g:/Programs/C#/MonoGame/Boggle/Content/Dice.png","g:/Programs/C#/MonoGame/Boggle/Content/bin/DesktopGL/Content/Dice.xnb","TextureProcessor","Texture2DContent",47067,1331285,0.2237408
+"g:/Programs/C#/MonoGame/Boggle/Content/Dice.png","g:/Programs/C#/MonoGame/Boggle/Content/bin/DesktopGL/Content/Dice.xnb","TextureProcessor","Texture2DContent",48296,1331285,0.2055498
 "g:/Programs/C#/MonoGame/Boggle/Content/RobotoMono-Medium-large.spritefont","g:/Programs/C#/MonoGame/Boggle/Content/bin/DesktopGL/Content/RobotoMono-Medium-large.xnb","FontDescriptionProcessor","SpriteFontContent",2084,136226,0.2777166
 "g:/Programs/C#/MonoGame/Boggle/Content/RobotoMono-Medium-small.spritefont","g:/Programs/C#/MonoGame/Boggle/Content/bin/DesktopGL/Content/RobotoMono-Medium-small.xnb","FontDescriptionProcessor","SpriteFontContent",2084,37922,0.2266435

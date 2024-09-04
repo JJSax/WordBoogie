@@ -17,6 +17,8 @@ public class Board
 
     readonly Dice[,] board;
 	readonly Dice shuffleDie;
+	private Texture2D diceTexture;
+	private Rectangle arrowTexture;
 	private Texture2D sandTexture;
 	private Rectangle sandTimer;
 	private Rectangle sand;
@@ -43,7 +45,7 @@ public class Board
 	BoggleState gameState;
 	private int aiWordIndex = 0;
 
-	public Board(GameWindow window)
+	public Board(GameWindow window, Texture2D dice)
 	{
 		board = new Dice[width, height];
 		for (int i = 0; i < width; i++)
@@ -59,7 +61,7 @@ public class Board
 
 		Rectangle drawPos = shuffleDie.getDrawPosition(0, height);
 		sandTimer = new Rectangle(drawPos.X + 100, drawPos.Y, 40, 80);
-		sandRemaining = TimeSpan.FromMinutes(3);
+		sandRemaining = TimeSpan.FromMinutes(1);
 		UpdateSand();
 
 		MouseExt.LeftMousePressed += AttemptShuffle;
@@ -73,6 +75,9 @@ public class Board
 		FindWords();
 
 		gameState = BoggleState.playing;
+
+		diceTexture = dice;
+		arrowTexture = new(240, 80, Dice.GetImageSize, Dice.GetImageSize);
 	}
 
 	private void FindWords()
@@ -106,6 +111,8 @@ public class Board
 				Common.Wrap(--aiWordIndex, 0, wordCount, out aiWordIndex);
 				break;
 		}
+
+		currentWord = allWords[aiWordIndex];
 	}
 
 	private void TextInput(object sender, TextInputEventArgs args)
@@ -200,14 +207,25 @@ public class Board
 		{
 			int diceSize = Dice.GetImageSize;
 			Vector2 offset = new(diceSize/2, diceSize/2);
-			string word = solver.FoundWords.ElementAt(aiWordIndex);
+			string word = allWords.ElementAt(aiWordIndex);
 			if (word != null){
 				Stack<Vector2> copyVector = new(solver.Paths[word]);
-				Vector2 startPoint = copyVector.Pop() * diceSize;
+				Vector2 startPoint = copyVector.Pop();
 				for (int i = 1; i < word.Length; i++)
 				{
-					Vector2 endPoint = copyVector.Pop() * diceSize;
-					spriteBatch.DrawLine(startPoint + offset, endPoint + offset, Color.Green, 5);
+					Vector2 endPoint = copyVector.Pop();
+					Vector2 midPoint = (startPoint + endPoint) / 2 * diceSize + offset;
+					spriteBatch.DrawCircle(midPoint, 4, 20, Color.Magenta, 1f, 0f);
+					Rectangle midRect = new(
+						(int)midPoint.X,
+						(int)midPoint.Y,
+						diceSize, diceSize
+					);
+					float angle = (endPoint - startPoint).ToAngle();
+					spriteBatch.Draw(
+						diceTexture, midRect, arrowTexture,
+						Color.White, angle, offset, SpriteEffects.None, 0f
+					);
 					startPoint = endPoint;
 				}
 			}

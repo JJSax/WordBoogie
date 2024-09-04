@@ -144134,14 +144134,10 @@ iguanodontoid
 iguanodontoidea
 iguanoid
 iguvine
-ihi
 ihlat
 ihleite
-ihp
 ihram
 ihrams
-ihs
-iiasa
 iiwi
 ijithad
 ijma
@@ -304945,7 +304941,6 @@ sups
 supt
 suption
 supulchre
-supvr
 sur
 sura
 suraddition
