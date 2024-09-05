@@ -17,7 +17,7 @@ public class Board
 
     readonly Dice[,] board;
 	readonly Dice shuffleDie;
-	private Texture2D diceTexture;
+	private readonly Texture2D diceTexture;
 	private Rectangle arrowTexture;
 	private Texture2D sandTexture;
 	private Rectangle sandTimer;
@@ -61,7 +61,7 @@ public class Board
 
 		Rectangle drawPos = shuffleDie.getDrawPosition(0, height);
 		sandTimer = new Rectangle(drawPos.X + 100, drawPos.Y, 40, 80);
-		sandRemaining = TimeSpan.FromMinutes(1);
+		sandRemaining = TimeSpan.FromMinutes(3);
 		UpdateSand();
 
 		MouseExt.LeftMousePressed += AttemptShuffle;
@@ -179,7 +179,11 @@ public class Board
 		sandRemaining -= gameTime.ElapsedGameTime;
 		UpdateSand();
 
-		if (sandRemaining <= TimeSpan.Zero) gameState = BoggleState.scoreNegotiation;
+		if (sandRemaining <= TimeSpan.Zero)
+		{
+			gameState = BoggleState.scoreNegotiation;
+			currentWord = allWords.ElementAt(0);
+		}
 	}
 
 	private void DrawArrows(SpriteBatch spriteBatch)
@@ -238,13 +242,16 @@ public class Board
 		const int leftX = width * 80 + 20;
 		const int columnCapacity = 20;
 		const int textHeight = 20;
+
 		foreach (string entry in wordList)
 		{
+			Color wordColor = Color.Black;
+			if (currentWord == entry) wordColor = Color.Crimson;
 			Vector2 pos = new(
 				leftX + (ind / columnCapacity * 150),
 				ind % columnCapacity * textHeight
 			);
-			spriteBatch.DrawString(smallFont, entry, pos, Color.Black);
+			spriteBatch.DrawString(smallFont, entry, pos, wordColor);
 			ind++;
 		}
 	}
