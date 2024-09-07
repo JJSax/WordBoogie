@@ -8,25 +8,25 @@ namespace Boggle;
 
 public class BoggleSolver
 {
-	private readonly Trie dictTrie;
-	private readonly Trie confirmedTrie;
+	public Trie DictTrie {get; private set; }
+	public Trie ConfirmedTrie {get; private set; }
 	public HashSet<string> FoundWords {get; private set; }
 	public Dictionary<string, Stack<Vector2>> Paths {get; private set; }
 	private readonly int[,] directions = new int[,] { {-1, -1}, {-1, 0}, {-1, 1}, {0, -1}, {0, 1}, {1, -1}, {1, 0}, {1, 1} };
 
 	public BoggleSolver(IEnumerable<string> dictionary, IEnumerable<string> confirmedWords)
 	{
-		dictTrie = new Trie();
+		DictTrie = new Trie();
 		Debug.WriteLine("Writing {0} lines to the dictionary Trie.", dictionary.Count());
 		foreach (var word in dictionary)
 		{
-			dictTrie.Insert(word.ToUpper());
+			DictTrie.Insert(word.ToUpper());
 		}
 
-		confirmedTrie = new Trie();
+		ConfirmedTrie = new Trie();
 		foreach (string word in confirmedWords)
 		{
-			confirmedTrie.Insert(word.ToUpper());
+			ConfirmedTrie.Insert(word.ToUpper());
 		}
 		Debug.WriteLine("Writing {0} lines to the confirmed Trie.", confirmedWords.Count());
 
@@ -34,8 +34,8 @@ public class BoggleSolver
 	}
 
 	private bool SearchTrie(Trie trie, string word) => trie.Search(word);
-	public bool WordInDictionary(string word) => SearchTrie(dictTrie, word);
-	public bool WordInConfirmed(string word) => SearchTrie(confirmedTrie, word);
+	public bool WordInDictionary(string word) => SearchTrie(DictTrie, word);
+	public bool WordInConfirmed(string word) => SearchTrie(ConfirmedTrie, word);
 
 	private HashSet<string> FindWords(Dice[,] board, Trie trie)
 	{
@@ -58,12 +58,12 @@ public class BoggleSolver
 
 	public HashSet<string> FindAllWords(Dice[,] board)
 	{
-		return FindWords(board, dictTrie);
+		return FindWords(board, DictTrie);
 	}
 
 	public HashSet<string> FindConfirmedWords(Dice[,] board)
 	{
-		return FindWords(board, confirmedTrie);
+		return FindWords(board, ConfirmedTrie);
 	}
 
 	private void DFS(Dice[,] board, bool[,] visited, int row, int col, string currentWord, TrieNode node, Stack<Vector2> currentPath)

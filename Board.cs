@@ -35,16 +35,24 @@ public class Board
 	private string currentWord = "";
 
 	/// <summary>
+	/// All the words that are either confirmed as real, or use has used and accepted to be real.
+	/// </summary>
+	List<string> userWordList;
+	/// <summary>
 	/// All the words contained on this particular board.
 	/// </summary>
-	List<string> allWords;
+	List<string> allBoardWords;
+	/// <summary>
+	/// The list of words the ai found
+	/// </summary>
+	private List<string> aiBoardWords;
+	private int aiWordIndex = 0;
 
 	private int score = 0;
 	private readonly int[] wordLengthScores = [0, 0, 1, 1, 1, 2, 3, 4, 5, 6, 7];
 
 	BoggleState gameState;
-	private List<string> aiWords;
-	private int aiWordIndex = 0;
+	Random random = new();
 
 	public Board(GameWindow window, Texture2D dice)
 	{
@@ -74,11 +82,9 @@ public class Board
 		string dictionaryPath = "words_alpha_jj.txt";
 		string realWordPath = "confirmed_words.txt";
 
-		if (!FileManager.Exists()) FileManager.WriteWords(new(File.ReadLines(realWordPath)));
+		userWordList = new(FileManager.ReadWords().Concat(File.ReadLines(realWordPath)));
 
-		List<string> userWordList = FileManager.ReadWords();
-
-		solver = new(File.ReadLines(dictionaryPath), File.ReadLines(realWordPath));
+		solver = new(File.ReadLines(dictionaryPath), userWordList);
 		FindWords();
 
 		gameState = BoggleState.playing;
@@ -89,18 +95,26 @@ public class Board
 
 	private void FindWords()
 	{
-		allWords = solver.FindAllWords(board).ToList();
-		aiWords = solver.FindConfirmedWords(board).ToList();
-	}
+		allBoardWords = solver.FindAllWords(board).ToList();
 
-	public void AddContent(SpriteFont inFont, bool isLarge) { largeFont = inFont; }
-	public void AddContent(SpriteFont inFont) { smallFont = inFont; }
-	public void AddContent(Texture2D timerTexture) { sandTexture = timerTexture; }
+		aiBoardWords = [];
+
+		int[] odds = [0,0,0, 1, 3, 6, 10, 12, 15, 20, 40, 100, 150, 200, 250];
+
+		foreach (string word in allBoardWords)
+		{
+			if (solver.ConfirmedTrie.Search(word))
+			{
+				int choice = random.Next(odds[word.Length]);
+				if (choice == 0) aiBoardWords.Add(word);
+			}
+		}
+	}
 	public void AddContent(Texture2D timerTexture, SpriteFont LargeFont, SpriteFont SmallFont)
 	{
-		AddContent(LargeFont, true);
-		AddContent(SmallFont);
-		AddContent(timerTexture);
+		largeFont = LargeFont;
+		smallFont = SmallFont;
+		sandTexture = timerTexture;
 	}
 
 	private void KeyboardInput(object sender, InputKeyEventArgs args)
@@ -108,7 +122,7 @@ public class Board
 		if (gameState != BoggleState.scoreNegotiation) return;
 
 		Keys key = args.Key;
-		int wordCount = allWords.Count;
+		int wordCount = aiBoardWords.Count;
 
 		switch (key)
 		{
@@ -120,7 +134,7 @@ public class Board
 				break;
 		}
 
-		currentWord = allWords[aiWordIndex];
+		currentWord = aiBoardWords[aiWordIndex];
 	}
 
 	private void TextInput(object sender, TextInputEventArgs args)
@@ -132,7 +146,7 @@ public class Board
 
 		if (key == Keys.Enter && currentWord.Length > 0)
 		{
-			if (allWords.Contains(currentWord) && !wordList.Contains(currentWord))
+			if (allBoardWords.Contains(currentWord) && !wordList.Contains(currentWord))
 			{
 				if (!solver.WordInConfirmed(currentWord)) FileManager.AppendWord(currentWord);
 
@@ -168,7 +182,6 @@ public class Board
 				board[i, j].ChooseLetter();
 			}
 		}
-		sandRemaining = TimeSpan.FromMinutes(3);
 		wordList.Clear();
 
 		FindWords();
@@ -176,6 +189,7 @@ public class Board
 
 		currentWord = "";
 		aiWordIndex = 0;
+		sandRemaining = TimeSpan.FromMinutes(3);
 	}
 
 	private void UpdateSand()
@@ -195,7 +209,7 @@ public class Board
 		if (sandRemaining <= TimeSpan.Zero)
 		{
 			gameState = BoggleState.scoreNegotiation;
-			currentWord = allWords.ElementAt(0);
+			currentWord = aiBoardWords.ElementAtOrDefault(aiWordIndex);
 		}
 	}
 
@@ -203,7 +217,7 @@ public class Board
 	{
 		if (gameState != BoggleState.scoreNegotiation) return;
 
-		string word = allWords.ElementAt(aiWordIndex);
+		string word = aiBoardWords.ElementAt(aiWordIndex);
 		if (word == null) return;
 
 		int diceSize = Dice.GetImageSize;
