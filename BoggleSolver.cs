@@ -8,23 +8,36 @@ namespace Boggle;
 
 public class BoggleSolver
 {
-	private readonly Trie trie;
+	private readonly Trie dictTrie;
+	private readonly Trie confirmedTrie;
 	public HashSet<string> FoundWords {get; private set; }
 	public Dictionary<string, Stack<Vector2>> Paths {get; private set; }
 	private readonly int[,] directions = new int[,] { {-1, -1}, {-1, 0}, {-1, 1}, {0, -1}, {0, 1}, {1, -1}, {1, 0}, {1, 1} };
 
-	public BoggleSolver(IEnumerable<string> dictionary)
+	public BoggleSolver(IEnumerable<string> dictionary, IEnumerable<string> confirmedWords)
 	{
-		trie = new Trie();
-		Debug.WriteLine("Writing {0} lines to the Trie.", dictionary.Count());
+		dictTrie = new Trie();
+		Debug.WriteLine("Writing {0} lines to the dictionary Trie.", dictionary.Count());
 		foreach (var word in dictionary)
 		{
-			trie.Insert(word.ToUpper());
+			dictTrie.Insert(word.ToUpper());
 		}
+
+		confirmedTrie = new Trie();
+		foreach (string word in confirmedWords)
+		{
+			confirmedTrie.Insert(word.ToUpper());
+		}
+		Debug.WriteLine("Writing {0} lines to the confirmed Trie.", confirmedWords.Count());
+
 		Paths = [];
 	}
 
-	public HashSet<string> FindWords(Dice[,] board)
+	private bool SearchTrie(Trie trie, string word) => trie.Search(word);
+	public bool WordInDictionary(string word) => SearchTrie(dictTrie, word);
+	public bool WordInConfirmed(string word) => SearchTrie(confirmedTrie, word);
+
+	private HashSet<string> FindWords(Dice[,] board, Trie trie)
 	{
 		FoundWords = new HashSet<string>();
 		int rows = board.GetLength(0);
@@ -41,6 +54,16 @@ public class BoggleSolver
 		}
 
 		return FoundWords;
+	}
+
+	public HashSet<string> FindAllWords(Dice[,] board)
+	{
+		return FindWords(board, dictTrie);
+	}
+
+	public HashSet<string> FindConfirmedWords(Dice[,] board)
+	{
+		return FindWords(board, confirmedTrie);
 	}
 
 	private void DFS(Dice[,] board, bool[,] visited, int row, int col, string currentWord, TrieNode node, Stack<Vector2> currentPath)

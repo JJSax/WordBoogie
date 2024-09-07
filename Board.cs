@@ -15,7 +15,7 @@ public class Board
 	const int width = 4;
 	const int height = 4;
 
-    readonly Dice[,] board;
+	readonly Dice[,] board;
 	readonly Dice shuffleDie;
 	private readonly Texture2D diceTexture;
 	private Rectangle arrowTexture;
@@ -37,12 +37,13 @@ public class Board
 	/// <summary>
 	/// All the words contained on this particular board.
 	/// </summary>
-    List<string> allWords;
+	List<string> allWords;
 
 	private int score = 0;
 	private readonly int[] wordLengthScores = [0, 0, 1, 1, 1, 2, 3, 4, 5, 6, 7];
 
 	BoggleState gameState;
+	private List<string> aiWords;
 	private int aiWordIndex = 0;
 
 	public Board(GameWindow window, Texture2D dice)
@@ -70,8 +71,14 @@ public class Board
 		gameWindow.TextInput += TextInput;
 		gameWindow.KeyDown += KeyboardInput;
 
-		string filePath = "words_alpha_jj.txt";
-		solver = new(File.ReadLines(filePath));
+		string dictionaryPath = "words_alpha_jj.txt";
+		string realWordPath = "confirmed_words.txt";
+
+		if (!FileManager.Exists()) FileManager.WriteWords(new(File.ReadLines(realWordPath)));
+
+		List<string> userWordList = FileManager.ReadWords();
+
+		solver = new(File.ReadLines(dictionaryPath), File.ReadLines(realWordPath));
 		FindWords();
 
 		gameState = BoggleState.playing;
@@ -82,7 +89,8 @@ public class Board
 
 	private void FindWords()
 	{
-		allWords = solver.FindWords(board).ToList();
+		allWords = solver.FindAllWords(board).ToList();
+		aiWords = solver.FindConfirmedWords(board).ToList();
 	}
 
 	public void AddContent(SpriteFont inFont, bool isLarge) { largeFont = inFont; }
@@ -126,6 +134,8 @@ public class Board
 		{
 			if (allWords.Contains(currentWord) && !wordList.Contains(currentWord))
 			{
+				if (!solver.WordInConfirmed(currentWord)) FileManager.AppendWord(currentWord);
+
 				wordList.Add(currentWord);
 				score += wordLengthScores.ElementAt(currentWord.Length);
 			}
@@ -163,6 +173,9 @@ public class Board
 
 		FindWords();
 		gameState = BoggleState.playing;
+
+		currentWord = "";
+		aiWordIndex = 0;
 	}
 
 	private void UpdateSand()
@@ -194,14 +207,13 @@ public class Board
 		if (word == null) return;
 
 		int diceSize = Dice.GetImageSize;
-		Vector2 offset = new(diceSize/2, diceSize/2);
+		Vector2 offset = new(diceSize / 2, diceSize / 2);
 		Stack<Vector2> copyVector = new(solver.Paths[word]);
 		Vector2 startPoint = copyVector.Pop();
 		for (int i = 1; i < word.Length; i++)
 		{
 			Vector2 endPoint = copyVector.Pop();
 			Vector2 midPoint = (startPoint + endPoint) / 2 * diceSize + offset;
-			spriteBatch.DrawCircle(midPoint, 4, 20, Color.Magenta, 1f, 0f);
 			Rectangle midRect = new(
 				(int)midPoint.X,
 				(int)midPoint.Y,
