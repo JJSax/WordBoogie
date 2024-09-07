@@ -210,6 +210,14 @@ public class Board
 		{
 			gameState = BoggleState.scoreNegotiation;
 			currentWord = aiBoardWords.ElementAtOrDefault(aiWordIndex);
+
+			foreach (string word in aiBoardWords)
+			{
+				if (wordList.Contains(word))
+				{
+					score -= wordLengthScores[word.Length];
+				}
+			}
 		}
 	}
 
@@ -278,6 +286,10 @@ public class Board
 				ind % columnCapacity * textHeight
 			);
 			spriteBatch.DrawString(smallFont, entry, pos, wordColor);
+			if (gameState == BoggleState.scoreNegotiation && aiBoardWords.Contains(entry))
+			{
+				spriteBatch.DrawLine(pos, pos + smallFont.MeasureString(entry), Color.AntiqueWhite, 2f);
+			}
 			ind++;
 		}
 	}
