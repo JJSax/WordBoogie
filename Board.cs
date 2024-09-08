@@ -100,7 +100,7 @@ public class Board
 
 		aiBoardWords = [];
 
-		int[] odds = [0,0,0, 2, 4, 6, 10, 12, 15, 20, 40, 100, 150, 200, 250];
+		int[] odds = [0,0,0, 2, 4, 6, 10, 12, 15, 20, 21, 22, 23, 25, 30];
 
 		if (aiScore >= score + 20)
 			odds[3] = 3;
@@ -158,7 +158,11 @@ public class Board
 		{
 			if (allBoardWords.Contains(currentWord) && !wordList.Contains(currentWord))
 			{
-				if (!solver.WordInConfirmed(currentWord)) FileManager.AppendWord(currentWord);
+				if (!solver.WordInConfirmed(currentWord))
+				{
+					FileManager.AppendWord(currentWord);
+					userWordList.Add(currentWord);
+				}
 
 				wordList.Add(currentWord);
 				score += wordLengthScores.ElementAt(currentWord.Length);
