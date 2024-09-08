@@ -49,10 +49,11 @@ public class Board
 	private int aiWordIndex = 0;
 
 	private int score = 0;
+	private int aiScore = 0;
 	private readonly int[] wordLengthScores = [0, 0, 1, 1, 1, 2, 3, 4, 5, 6, 7];
 
 	BoggleState gameState;
-	Random random = new();
+    readonly Random random = new();
 
 	public Board(GameWindow window, Texture2D dice)
 	{
@@ -99,14 +100,23 @@ public class Board
 
 		aiBoardWords = [];
 
-		int[] odds = [0,0,0, 1, 3, 6, 10, 12, 15, 20, 40, 100, 150, 200, 250];
+		int[] odds = [0,0,0, 2, 4, 6, 10, 12, 15, 20, 40, 100, 150, 200, 250];
+
+		if (aiScore >= score + 20)
+			odds[3] = 3;
+		if (score >= aiScore + 20)
+			odds[3] = 1;
 
 		foreach (string word in allBoardWords)
 		{
 			if (solver.ConfirmedTrie.Search(word))
 			{
 				int choice = random.Next(odds[word.Length]);
-				if (choice == 0) aiBoardWords.Add(word);
+				if (choice == 0)
+				{
+					aiBoardWords.Add(word);
+					aiScore += wordLengthScores[word.Length];
+				}
 			}
 		}
 	}
@@ -192,6 +202,19 @@ public class Board
 		sandRemaining = TimeSpan.FromMinutes(3);
 	}
 
+	private void updateScores()
+	{
+		foreach (string word in aiBoardWords)
+		{
+			if (wordList.Contains(word))
+			{
+				int wordScore = wordLengthScores[word.Length];
+				score -= wordScore;
+				aiScore -= wordScore;
+			}
+		}
+	}
+
 	private void UpdateSand()
 	{
 		TimeSpan min3 = TimeSpan.FromMinutes(3);
@@ -211,13 +234,7 @@ public class Board
 			gameState = BoggleState.scoreNegotiation;
 			currentWord = aiBoardWords.ElementAtOrDefault(aiWordIndex);
 
-			foreach (string word in aiBoardWords)
-			{
-				if (wordList.Contains(word))
-				{
-					score -= wordLengthScores[word.Length];
-				}
-			}
+			updateScores();
 		}
 	}
 
@@ -270,11 +287,15 @@ public class Board
 		Vector2 scorePosition = new(sandTimer.Right + 10, Dice.GetImageSize * height);
 		spriteBatch.DrawString(smallFont, $"Score: {score}", scorePosition, Color.Black);
 
+		Rectangle aiScoreRect = shuffleDie.getDrawPosition(0, height);
+		Vector2 aiScorePosition = new(5, aiScoreRect.Bottom);
+		spriteBatch.DrawString(smallFont, $"AI Score: {aiScore}", aiScorePosition, Color.Black);
+
 		DrawArrows(spriteBatch);
 
 		int ind = 0;
 		const int leftX = width * 80 + 20;
-		const int columnCapacity = 20;
+		const int columnCapacity = 16;
 		const int textHeight = 20;
 
 		foreach (string entry in wordList)
