@@ -310,11 +310,15 @@ public class Board
 				leftX + (ind / columnCapacity * 150),
 				ind % columnCapacity * textHeight
 			);
-			spriteBatch.DrawString(smallFont, entry, pos, wordColor);
 			if (gameState == BoggleState.scoreNegotiation && aiBoardWords.Contains(entry))
 			{
-				spriteBatch.DrawLine(pos, pos + smallFont.MeasureString(entry), Color.AntiqueWhite, 2f);
+				Vector2 wordSize = smallFont.MeasureString(entry);
+				Vector2 offset = new(0, 4);
+				Vector2 startPos = pos + new Vector2(0, wordSize.Y/2) - offset;
+				Vector2 endPos = startPos + new Vector2(wordSize.X, 12);
+				spriteBatch.DrawLine(startPos, endPos, Color.AntiqueWhite, 2f);
 			}
+			spriteBatch.DrawString(smallFont, entry, pos, wordColor);
 			ind++;
 		}
 	}
