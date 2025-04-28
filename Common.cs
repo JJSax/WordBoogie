@@ -1,7 +1,7 @@
 using System;
 using System.Numerics;
 
-namespace Boggle;
+namespace WordBoogie;
 
 public class Common
 {

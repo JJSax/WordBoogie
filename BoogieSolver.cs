@@ -4,9 +4,9 @@ using System.Diagnostics;
 using System.Linq;
 using Microsoft.Xna.Framework;
 
-namespace Boggle;
+namespace WordBoogie;
 
-public class BoggleSolver
+public class BoogieSolver
 {
 	public Trie DictTrie {get; private set; }
 	public Trie ConfirmedTrie {get; private set; }
@@ -14,7 +14,7 @@ public class BoggleSolver
 	public Dictionary<string, Stack<Vector2>> Paths {get; private set; }
 	private readonly int[,] directions = new int[,] { {-1, -1}, {-1, 0}, {-1, 1}, {0, -1}, {0, 1}, {1, -1}, {1, 0}, {1, 1} };
 
-	public BoggleSolver(IEnumerable<string> dictionary, IEnumerable<string> confirmedWords)
+	public BoogieSolver(IEnumerable<string> dictionary, IEnumerable<string> confirmedWords)
 	{
 		DictTrie = new Trie();
 		Debug.WriteLine("Writing {0} lines to the dictionary Trie.", dictionary.Count());

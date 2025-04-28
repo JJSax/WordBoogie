@@ -1,4 +1,4 @@
 Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Size,Build Seconds
-"g:/Programs/C#/MonoGame/Boggle/Content/Dice.png","g:/Programs/C#/MonoGame/Boggle/Content/bin/DesktopGL/Dice.xnb","TextureProcessor","Texture2DContent",48296,1331285,0.2183062
-"g:/Programs/C#/MonoGame/Boggle/Content/RobotoMono-Medium-large.spritefont","g:/Programs/C#/MonoGame/Boggle/Content/bin/DesktopGL/RobotoMono-Medium-large.xnb","FontDescriptionProcessor","SpriteFontContent",2084,136226,0.2714072
-"g:/Programs/C#/MonoGame/Boggle/Content/RobotoMono-Medium-small.spritefont","g:/Programs/C#/MonoGame/Boggle/Content/bin/DesktopGL/RobotoMono-Medium-small.xnb","FontDescriptionProcessor","SpriteFontContent",2084,37922,0.283054
+"g:/Programs/C#/MonoGame/WordBoogie/Content/Dice.png","g:/Programs/C#/MonoGame/WordBoogie/Content/bin/DesktopGL/Dice.xnb","TextureProcessor","Texture2DContent",48296,1331285,0.2183062
+"g:/Programs/C#/MonoGame/WordBoogie/Content/RobotoMono-Medium-large.spritefont","g:/Programs/C#/MonoGame/WordBoogie/Content/bin/DesktopGL/RobotoMono-Medium-large.xnb","FontDescriptionProcessor","SpriteFontContent",2084,136226,0.2714072
+"g:/Programs/C#/MonoGame/WordBoogie/Content/RobotoMono-Medium-small.spritefont","g:/Programs/C#/MonoGame/WordBoogie/Content/bin/DesktopGL/RobotoMono-Medium-small.xnb","FontDescriptionProcessor","SpriteFontContent",2084,37922,0.283054

@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
 
-namespace Boggle;
+namespace WordBoogie;
 
 public class Board
 {
@@ -26,7 +26,7 @@ public class Board
 	private static GameWindow gameWindow;
 	private SpriteFont largeFont;
 	private SpriteFont smallFont;
-	private readonly BoggleSolver solver;
+	private readonly BoogieSolver solver;
 
 	/// <summary>
 	/// The list of words in this game that the player found.
@@ -52,8 +52,8 @@ public class Board
 	private int aiScore = 0;
 	private readonly int[] wordLengthScores = [0, 0, 1, 1, 1, 2, 3, 4, 5, 6, 7];
 
-	BoggleState gameState;
-    readonly Random random = new();
+	BoogieState gameState;
+	readonly Random random = new();
 
 	public Board(GameWindow window, Texture2D dice)
 	{
@@ -88,7 +88,7 @@ public class Board
 		solver = new(File.ReadLines(dictionaryPath), userWordList);
 		FindWords();
 
-		gameState = BoggleState.playing;
+		gameState = BoogieState.playing;
 
 		diceTexture = dice;
 		arrowTexture = new(240, 80, Dice.GetImageSize, Dice.GetImageSize);
@@ -129,7 +129,7 @@ public class Board
 
 	private void KeyboardInput(object sender, InputKeyEventArgs args)
 	{
-		if (gameState != BoggleState.scoreNegotiation) return;
+		if (gameState != BoogieState.scoreNegotiation) return;
 
 		Keys key = args.Key;
 		int wordCount = aiBoardWords.Count;
@@ -149,7 +149,7 @@ public class Board
 
 	private void TextInput(object sender, TextInputEventArgs args)
 	{
-		if (gameState != BoggleState.playing) return;
+		if (gameState != BoogieState.playing) return;
 
 		Keys key = args.Key;
 		KeyboardState keys = Keyboard.GetState();
@@ -199,7 +199,7 @@ public class Board
 		wordList.Clear();
 
 		FindWords();
-		gameState = BoggleState.playing;
+		gameState = BoogieState.playing;
 
 		currentWord = "";
 		aiWordIndex = 0;
@@ -229,13 +229,13 @@ public class Board
 	public void Update(GameTime gameTime)
 	{
 
-		if (gameState != BoggleState.playing) return;
+		if (gameState != BoogieState.playing) return;
 		sandRemaining -= gameTime.ElapsedGameTime;
 		UpdateSand();
 
 		if (sandRemaining <= TimeSpan.Zero)
 		{
-			gameState = BoggleState.scoreNegotiation;
+			gameState = BoogieState.scoreNegotiation;
 			currentWord = aiBoardWords.ElementAtOrDefault(aiWordIndex);
 
 			updateScores();
@@ -244,7 +244,7 @@ public class Board
 
 	private void DrawArrows(SpriteBatch spriteBatch)
 	{
-		if (gameState != BoggleState.scoreNegotiation) return;
+		if (gameState != BoogieState.scoreNegotiation) return;
 
 		string word = aiBoardWords.ElementAt(aiWordIndex);
 		if (word == null) return;
@@ -310,7 +310,7 @@ public class Board
 				leftX + (ind / columnCapacity * 150),
 				ind % columnCapacity * textHeight
 			);
-			if (gameState == BoggleState.scoreNegotiation && aiBoardWords.Contains(entry))
+			if (gameState == BoogieState.scoreNegotiation && aiBoardWords.Contains(entry))
 			{
 				Vector2 wordSize = smallFont.MeasureString(entry);
 				Vector2 offset = new(0, 4);

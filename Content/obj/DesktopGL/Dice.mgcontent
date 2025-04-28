@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>g:/Programs/C#/MonoGame/Boggle/Content/Dice.png</SourceFile>
+  <SourceFile>g:/Programs/C#/MonoGame/WordBoogie/Content/Dice.png</SourceFile>
   <SourceTime>2024-09-03T16:50:16.7568115-06:00</SourceTime>
-  <DestFile>g:/Programs/C#/MonoGame/Boggle/Content/bin/DesktopGL/Dice.xnb</DestFile>
+  <DestFile>g:/Programs/C#/MonoGame/WordBoogie/Content/bin/DesktopGL/Dice.xnb</DestFile>
   <DestTime>2024-09-03T21:23:47.5541039-06:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2024-08-16T11:05:56-06:00</ImporterTime>

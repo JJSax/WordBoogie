@@ -2,7 +2,7 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Boggle;
+namespace WordBoogie;
 
 public class Dice
 {

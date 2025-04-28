@@ -1,4 +1,4 @@
 ﻿using System.Diagnostics;
 
-using var game = new Boggle.Game1();
+using var game = new WordBoogie.Game1();
 game.Run();

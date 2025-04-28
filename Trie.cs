@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Boggle;
+namespace WordBoogie;
 
 public class TrieNode
 {
