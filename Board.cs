@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using Microsoft.Xna.Framework;
@@ -80,8 +81,9 @@ public class Board
 		gameWindow.TextInput += TextInput;
 		gameWindow.KeyDown += KeyboardInput;
 
-		string dictionaryPath = "words_alpha_jj.txt";
-		string realWordPath = "confirmed_words.txt";
+		// Get paths to binary data folder
+		string dictionaryPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data", "words_alpha_jj.txt");
+		string realWordPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data", "confirmed_words.txt");
 
 		userWordList = new(FileManager.ReadWords().Concat(File.ReadLines(realWordPath)));
 
