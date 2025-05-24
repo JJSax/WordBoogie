@@ -8,7 +8,7 @@ public class FileManager
 {
 	private static readonly string filePath = Path.Combine(
 		Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-		"Word_Scramble",
+		"Word_Boogie",
 		"words.txt"
 	);
 
