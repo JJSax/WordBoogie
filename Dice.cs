@@ -41,10 +41,13 @@ public class Dice
 
 	public void Draw(int x, int y)
 	{
-		spriteBatch.Draw(diceTexture, new Vector2(x * squareImgDiceSize, y * squareImgDiceSize), quad, Color.White);
+		spriteBatch.Draw(diceTexture, new Vector2(x * squareImgDiceSize, y * squareImgDiceSize), quad, Color.LightGray);
 	}
 
-
+	public void DrawGlint(int x, int y)
+	{
+		spriteBatch.Draw(diceTexture, new Vector2(x * squareImgDiceSize, y * squareImgDiceSize), quad, Color.White);
+	}
 
 	public Rectangle getDrawPosition(int x, int y)
 	{
@@ -53,6 +56,6 @@ public class Dice
 
 	public void MakeShuffleDice() => quad = shuffleRect;
 	public char GetLetter => alphabet[LetterIndex];
-	public static int GetImageSize => squareImgDiceSize;
+	public static int ImageSize => squareImgDiceSize;
 	public Rectangle GetQuad => quad;
 }

@@ -35,7 +35,7 @@ public class Game1 : Game
 		SpriteFont largeFont = Content.Load<SpriteFont>("RobotoMono-Medium-large");
 		SpriteFont smallFont = Content.Load<SpriteFont>("RobotoMono-Medium-small");
 		Texture2D primitiveTexture = new(GraphicsDevice, 1, 1);
-		primitiveTexture.SetData(new[] {Color.White});
+		primitiveTexture.SetData([Color.White]);
 
 		board = new Board(Window, dice);
 		board.AddContent(primitiveTexture, largeFont, smallFont);

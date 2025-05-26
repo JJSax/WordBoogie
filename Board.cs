@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using Microsoft.Xna.Framework;
@@ -38,7 +37,7 @@ public class Board
 	/// <summary>
 	/// All the words that are either confirmed as real, or use has used and accepted to be real.
 	/// </summary>
-	List<string> userWordList;
+	readonly List<string> userWordList;
 	/// <summary>
 	/// All the words contained on this particular board.
 	/// </summary>
@@ -93,7 +92,7 @@ public class Board
 		gameState = BoogieState.playing;
 
 		diceTexture = dice;
-		arrowTexture = new(240, 80, Dice.GetImageSize, Dice.GetImageSize);
+		arrowTexture = new(240, 80, Dice.ImageSize, Dice.ImageSize);
 	}
 
 	private void FindWords()
@@ -208,7 +207,7 @@ public class Board
 		sandRemaining = TimeSpan.FromMinutes(3);
 	}
 
-	private void updateScores()
+	private void UpdateScores()
 	{
 		foreach (string word in aiBoardWords)
 		{
@@ -230,7 +229,6 @@ public class Board
 
 	public void Update(GameTime gameTime)
 	{
-
 		if (gameState != BoogieState.playing) return;
 		sandRemaining -= gameTime.ElapsedGameTime;
 		UpdateSand();
@@ -240,18 +238,13 @@ public class Board
 			gameState = BoogieState.scoreNegotiation;
 			currentWord = aiBoardWords.ElementAtOrDefault(aiWordIndex);
 
-			updateScores();
+			UpdateScores();
 		}
 	}
 
-	private void DrawArrows(SpriteBatch spriteBatch)
+	private void DrawArrows(SpriteBatch spriteBatch, string word)
 	{
-		if (gameState != BoogieState.scoreNegotiation) return;
-
-		string word = aiBoardWords.ElementAt(aiWordIndex);
-		if (word == null) return;
-
-		int diceSize = Dice.GetImageSize;
+		int diceSize = Dice.ImageSize;
 		Vector2 offset = new(diceSize / 2, diceSize / 2);
 		Stack<Vector2> copyVector = new(solver.Paths[word]);
 		Vector2 startPoint = copyVector.Pop();
@@ -273,31 +266,46 @@ public class Board
 		}
 	}
 
-	public void Draw(SpriteBatch spriteBatch)
+	public void DrawLetterBoard(SpriteBatch spriteBatch)
 	{
+		string word = aiBoardWords.ElementAt(aiWordIndex);
+		bool shouldHighlight = word != null && gameState == BoogieState.scoreNegotiation;
+
+		HashSet<Vector2> highlightPositions = shouldHighlight ? new(solver.Paths[word]) : new();
+
 		for (int i = 0; i < width; i++)
 		{
 			for (int j = 0; j < height; j++)
 			{
-				board[i, j]?.Draw(i, j);
+				bool highlight = shouldHighlight && highlightPositions.Contains(new Vector2(i, j));
+				if (highlight)
+					board[i, j]?.Draw(i, j);
+				else
+					board[i, j]?.DrawGlint(i, j);
 			}
 		}
 
+		if (shouldHighlight)
+			DrawArrows(spriteBatch, word);
+	}
+
+	public void Draw(SpriteBatch spriteBatch)
+	{
 		spriteBatch.Draw(sandTexture, sandTimer, Color.Gray);
 		spriteBatch.Draw(sandTexture, sand, Color.Yellow);
-		shuffleDie.Draw(0, height);
+		shuffleDie.DrawGlint(0, height);
 
 		Vector2 position = new(5, gameWindow.ClientBounds.Height - 56);
 		spriteBatch.DrawString(largeFont, currentWord, position, Color.Black);
 
-		Vector2 scorePosition = new(sandTimer.Right + 10, Dice.GetImageSize * height);
+		Vector2 scorePosition = new(sandTimer.Right + 10, Dice.ImageSize * height);
 		spriteBatch.DrawString(smallFont, $"Score: {score}", scorePosition, Color.Black);
 
 		Rectangle aiScoreRect = shuffleDie.getDrawPosition(0, height);
 		Vector2 aiScorePosition = new(5, aiScoreRect.Bottom);
 		spriteBatch.DrawString(smallFont, $"AI Score: {aiScore}", aiScorePosition, Color.Black);
 
-		DrawArrows(spriteBatch);
+		DrawLetterBoard(spriteBatch);
 
 		int ind = 0;
 		const int leftX = width * 80 + 20;
@@ -316,7 +324,7 @@ public class Board
 			{
 				Vector2 wordSize = smallFont.MeasureString(entry);
 				Vector2 offset = new(0, 4);
-				Vector2 startPos = pos + new Vector2(0, wordSize.Y/2) - offset;
+				Vector2 startPos = pos + new Vector2(0, wordSize.Y / 2) - offset;
 				Vector2 endPos = startPos + new Vector2(wordSize.X, 12);
 				spriteBatch.DrawLine(startPos, endPos, Color.AntiqueWhite, 2f);
 			}
