@@ -11,7 +11,7 @@ public class BoogieSolver
 	public Trie DictTrie {get; private set; }
 	public Trie ConfirmedTrie {get; private set; }
 	public HashSet<string> FoundWords {get; private set; }
-	public Dictionary<string, Stack<Vector2>> Paths { get; private set; } //Todo consider if this would be better as a List
+	public Dictionary<string, List<Vector2>> Paths { get; private set; }
 	private readonly int[,] directions = new int[,] { {-1, -1}, {-1, 0}, {-1, 1}, {0, -1}, {0, 1}, {1, -1}, {1, 0}, {1, 1} };
 
 	public BoogieSolver(IEnumerable<string> dictionary, IEnumerable<string> confirmedWords)
@@ -72,19 +72,18 @@ public class BoogieSolver
 			return;
 
 		char letter = board[row, col].GetLetter;
-		if (!node.Children.ContainsKey(letter))
+		if (!node.Children.TryGetValue(letter, out TrieNode value))
 			return;
 
 		visited[row, col] = true;
 		currentWord += letter;
 		currentPath.Push(new Vector2(row, col));
-		node = node.Children[letter];
+		node = value;
 
 		if (node.IsEndOfWord)
 		{
 			FoundWords.Add(currentWord);
-			Paths[currentWord] = new Stack<Vector2>(currentPath);
-			// Paths.Add(currentWord, new Stack<Vector2>(currentPath));
+			Paths[currentWord] = currentPath.ToList();
 		}
 
 		for (int i = 0; i < directions.GetLength(0); i++)

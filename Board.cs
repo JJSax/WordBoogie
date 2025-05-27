@@ -279,16 +279,15 @@ public class Board
 		}
 	}
 
-	//todo maybe pass in the copyVector as a List from where it's called; it's used similarly there
 	private void DrawArrows(SpriteBatch spriteBatch, string word)
 	{
 		int diceSize = Dice.ImageSize;
 		Vector2 offset = new(diceSize / 2, diceSize / 2);
-		Stack<Vector2> copyVector = new(solver.Paths[word]);
-		Vector2 startPoint = copyVector.Pop();
-		for (int i = 1; i < word.Length; i++)
+		List<Vector2> currentPath = solver.Paths[word];
+		for (int i = 0; i < word.Length - 1; i++)
 		{
-			Vector2 endPoint = copyVector.Pop();
+			Vector2 startPoint = currentPath[i];
+			Vector2 endPoint = currentPath[i + 1];
 			Vector2 midPoint = (startPoint + endPoint) / 2 * diceSize + offset;
 			Rectangle midRect = new(
 				(int)midPoint.X,
@@ -300,7 +299,6 @@ public class Board
 				diceTexture, midRect, arrowTexture,
 				Color.White, angle, offset, SpriteEffects.None, 0f
 			);
-			startPoint = endPoint;
 		}
 	}
 
@@ -327,17 +325,22 @@ public class Board
 
 		if (!shouldHighlight) return;
 
-		List<Vector2> currentWordPath = solver.Paths[word].ToList();
+		List<Vector2> currentWordPath = solver.Paths[word];
+		int total = currentWordPath.Count;
+		int shineIndex = total - glintLetterIndex - 1; // 0-based from front
 
-		for (int i = 0; i < glintLetterIndex; i++)
-			DrawLetter(currentWordPath[i], Color.LightGray);
-
-		int sub = glintHold > 0 ? 1 : 0;
-		if (sub == 0)
-			DrawLetter(currentWordPath[glintLetterIndex], Color.White);
-
-		for (int i = glintLetterIndex + 1 - sub; i < currentWordPath.Count; i++)
-			DrawLetter(currentWordPath[i], Color.LightGray);
+		for (int i = total - 1; i >= 0; i--)
+		{
+			if (glintHold > 0)
+				DrawLetter(currentWordPath[i], Color.LightGray);
+			else
+			{
+				if (i == shineIndex)
+					DrawLetter(currentWordPath[i], Color.White);
+				else
+					DrawLetter(currentWordPath[i], Color.LightGray);
+			}
+		}
 
 		DrawArrows(spriteBatch, word);
 	}
