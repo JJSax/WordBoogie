@@ -11,7 +11,7 @@ public class BoogieSolver
 	public Trie DictTrie {get; private set; }
 	public Trie ConfirmedTrie {get; private set; }
 	public HashSet<string> FoundWords {get; private set; }
-	public Dictionary<string, Stack<Vector2>> Paths {get; private set; }
+	public Dictionary<string, Stack<Vector2>> Paths { get; private set; } //Todo consider if this would be better as a List
 	private readonly int[,] directions = new int[,] { {-1, -1}, {-1, 0}, {-1, 1}, {0, -1}, {0, 1}, {1, -1}, {1, 0}, {1, 1} };
 
 	public BoogieSolver(IEnumerable<string> dictionary, IEnumerable<string> confirmedWords)

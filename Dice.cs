@@ -7,7 +7,9 @@ namespace WordBoogie;
 public class Dice
 {
 	private const int squareImgDiceSize = 80;
-	private static readonly char[] alphabet = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
+
+	//! Fix Q usage
+	private static readonly char[] alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
 	private static readonly int[] letter_weights = [78,20,40,38,110,14,30,23,86,2,10,53,27,72,61,28,2,73,87,67,33,10,9,3,16,4];
 	private static readonly int weightSum = letter_weights.Sum();
 	//todo letter score values
@@ -37,6 +39,11 @@ public class Dice
 	{
 		LetterIndex = MathExt.WeightedRandomIndex(alphabet, letter_weights, weightSum);
 		quad = letter_rects[LetterIndex];
+	}
+
+	public void Draw(int x, int y, Color color)
+	{
+		spriteBatch.Draw(diceTexture, new Vector2(x * squareImgDiceSize, y * squareImgDiceSize), quad, color);
 	}
 
 	public void Draw(int x, int y)

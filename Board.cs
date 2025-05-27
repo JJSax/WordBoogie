@@ -52,6 +52,12 @@ public class Board
 	private int aiScore = 0;
 	private readonly int[] wordLengthScores = [0, 0, 1, 1, 1, 2, 3, 4, 5, 6, 7];
 
+	private int glintLetterIndex = 0;
+	private const float GLINTTIME = 0.4f;
+	private float glintTime = GLINTTIME;
+	private const float GLINTHOLD = 1.5f;
+	private float glintHold = 0f;
+
 	BoogieState gameState;
 	readonly Random random = new();
 
@@ -133,16 +139,25 @@ public class Board
 		if (gameState != BoogieState.scoreNegotiation) return;
 
 		Keys key = args.Key;
-		int wordCount = aiBoardWords.Count;
+		bool validKey = false;
 
 		switch (key)
 		{
 			case Keys.Up:
-				Common.Wrap(++aiWordIndex, 0, wordCount, out aiWordIndex);
+				validKey = true;
+				Common.Wrap(++aiWordIndex, 0, aiBoardWords.Count, out aiWordIndex);
 				break;
 			case Keys.Down:
-				Common.Wrap(--aiWordIndex, 0, wordCount, out aiWordIndex);
+				validKey = true;
+				Common.Wrap(--aiWordIndex, 0, aiBoardWords.Count, out aiWordIndex);
 				break;
+		}
+
+		if (validKey)
+		{
+			glintLetterIndex = 0;
+			glintTime = GLINTTIME;
+			glintHold = 0;
 		}
 
 		currentWord = aiBoardWords[aiWordIndex];
@@ -229,6 +244,28 @@ public class Board
 
 	public void Update(GameTime gameTime)
 	{
+		float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
+		if (gameState == BoogieState.scoreNegotiation)
+		{
+			glintTime -= dt;
+			glintHold -= dt;
+			if (glintHold <= 0 && glintHold + dt > 0)
+			{
+				glintLetterIndex = 0;
+				glintTime = GLINTTIME;
+			}
+			if (glintTime <= 0 && glintHold <= 0)
+			{
+				glintLetterIndex++;
+				glintTime = GLINTTIME;
+				if (glintLetterIndex >= currentWord.Length)
+				{
+					glintLetterIndex = 0;
+					glintHold = GLINTHOLD;
+				}
+			}
+		}
+
 		if (gameState != BoogieState.playing) return;
 		sandRemaining -= gameTime.ElapsedGameTime;
 		UpdateSand();
@@ -242,6 +279,7 @@ public class Board
 		}
 	}
 
+	//todo maybe pass in the copyVector as a List from where it's called; it's used similarly there
 	private void DrawArrows(SpriteBatch spriteBatch, string word)
 	{
 		int diceSize = Dice.ImageSize;
@@ -266,27 +304,42 @@ public class Board
 		}
 	}
 
+	private void DrawLetter(Vector2 p, Color color)
+	{
+		int ipx = (int)p.X;
+		int ipy = (int)p.Y;
+		board[ipx, ipy].Draw(ipx, ipy, color);
+	}
+
 	public void DrawLetterBoard(SpriteBatch spriteBatch)
 	{
 		string word = aiBoardWords.ElementAt(aiWordIndex);
 		bool shouldHighlight = word != null && gameState == BoogieState.scoreNegotiation;
 
-		HashSet<Vector2> highlightPositions = shouldHighlight ? new(solver.Paths[word]) : new();
-
+		Color color = gameState == BoogieState.scoreNegotiation ? Color.LightSlateGray : Color.White;
 		for (int i = 0; i < width; i++)
 		{
 			for (int j = 0; j < height; j++)
 			{
-				bool highlight = shouldHighlight && highlightPositions.Contains(new Vector2(i, j));
-				if (highlight)
-					board[i, j]?.Draw(i, j);
-				else
-					board[i, j]?.DrawGlint(i, j);
+				board[i, j]?.Draw(i, j, color);
 			}
 		}
 
-		if (shouldHighlight)
-			DrawArrows(spriteBatch, word);
+		if (!shouldHighlight) return;
+
+		List<Vector2> currentWordPath = solver.Paths[word].ToList();
+
+		for (int i = 0; i < glintLetterIndex; i++)
+			DrawLetter(currentWordPath[i], Color.LightGray);
+
+		int sub = glintHold > 0 ? 1 : 0;
+		if (sub == 0)
+			DrawLetter(currentWordPath[glintLetterIndex], Color.White);
+
+		for (int i = glintLetterIndex + 1 - sub; i < currentWordPath.Count; i++)
+			DrawLetter(currentWordPath[i], Color.LightGray);
+
+		DrawArrows(spriteBatch, word);
 	}
 
 	public void Draw(SpriteBatch spriteBatch)
