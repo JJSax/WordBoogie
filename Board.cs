@@ -136,7 +136,7 @@ public class Board
 
 	private void KeyboardInput(object sender, InputKeyEventArgs args)
 	{
-		if (gameState != BoogieState.scoreNegotiation) return;
+		if (gameState != BoogieState.scoreNegotiation || aiBoardWords.Count == 0) return;
 
 		Keys key = args.Key;
 		bool validKey = false;
@@ -245,7 +245,7 @@ public class Board
 	public void Update(GameTime gameTime)
 	{
 		float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
-		if (gameState == BoogieState.scoreNegotiation)
+		if (currentWord != null && gameState == BoogieState.scoreNegotiation)
 		{
 			glintTime -= dt;
 			glintHold -= dt;
@@ -311,7 +311,7 @@ public class Board
 
 	public void DrawLetterBoard(SpriteBatch spriteBatch)
 	{
-		string word = aiBoardWords.ElementAt(aiWordIndex);
+		string word = aiBoardWords.ElementAtOrDefault(aiWordIndex);
 		bool shouldHighlight = word != null && gameState == BoogieState.scoreNegotiation;
 
 		Color color = gameState == BoogieState.scoreNegotiation ? Color.LightSlateGray : Color.White;
@@ -351,8 +351,14 @@ public class Board
 		spriteBatch.Draw(sandTexture, sand, Color.Yellow);
 		shuffleDie.DrawGlint(0, height);
 
+		DrawLetterBoard(spriteBatch);
+
+		if (currentWord != null)
+		{
 		Vector2 position = new(5, gameWindow.ClientBounds.Height - 56);
 		spriteBatch.DrawString(largeFont, currentWord, position, Color.Black);
+		}
+
 
 		Vector2 scorePosition = new(sandTimer.Right + 10, Dice.ImageSize * height);
 		spriteBatch.DrawString(smallFont, $"Score: {score}", scorePosition, Color.Black);
@@ -361,7 +367,6 @@ public class Board
 		Vector2 aiScorePosition = new(5, aiScoreRect.Bottom);
 		spriteBatch.DrawString(smallFont, $"AI Score: {aiScore}", aiScorePosition, Color.Black);
 
-		DrawLetterBoard(spriteBatch);
 
 		int ind = 0;
 		const int leftX = width * 80 + 20;
