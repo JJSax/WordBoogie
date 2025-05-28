@@ -56,7 +56,7 @@ public class Dice
 		spriteBatch.Draw(diceTexture, new Vector2(x * squareImgDiceSize, y * squareImgDiceSize), quad, Color.White);
 	}
 
-	public Rectangle getDrawPosition(int x, int y)
+	public static Rectangle GetDrawPosition(int x, int y)
 	{
 		return new Rectangle(x * squareImgDiceSize, y * squareImgDiceSize, squareImgDiceSize, squareImgDiceSize);
 	}

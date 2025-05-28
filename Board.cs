@@ -37,7 +37,7 @@ public class Board
 	/// <summary>
 	/// All the words that are either confirmed as real, or use has used and accepted to be real.
 	/// </summary>
-	readonly List<string> userWordList;
+	readonly HashSet<string> userWordList;
 	/// <summary>
 	/// All the words contained on this particular board.
 	/// </summary>
@@ -77,7 +77,7 @@ public class Board
 		shuffleDie = new Dice();
 		shuffleDie.MakeShuffleDice();
 
-		Rectangle drawPos = shuffleDie.getDrawPosition(0, height);
+		Rectangle drawPos = Dice.GetDrawPosition(0, height);
 		sandTimer = new Rectangle(drawPos.X + 100, drawPos.Y, 40, 80);
 		ResetTimer();
 		UpdateSand();
@@ -201,7 +201,7 @@ public class Board
 
 	private void AttemptShuffle(Point position)
 	{
-		if (shuffleDie.getDrawPosition(0, height).Contains(position))
+		if (Dice.GetDrawPosition(0, height).Contains(position))
 			Shuffle();
 	}
 
@@ -304,13 +304,6 @@ public class Board
 		}
 	}
 
-	private void DrawLetter(Vector2 p, Color color)
-	{
-		int ipx = (int)p.X;
-		int ipy = (int)p.Y;
-		board[ipx, ipy].Draw(ipx, ipy, color);
-	}
-
 	public void DrawLetterBoard(SpriteBatch spriteBatch)
 	{
 		string word = aiBoardWords.ElementAtOrDefault(aiWordIndex);
@@ -333,15 +326,10 @@ public class Board
 
 		for (int i = total - 1; i >= 0; i--)
 		{
-			if (glintHold > 0)
-				DrawLetter(currentWordPath[i], Color.LightGray);
-			else
-			{
-				if (i == shineIndex)
-					DrawLetter(currentWordPath[i], Color.White);
-				else
-					DrawLetter(currentWordPath[i], Color.LightGray);
-			}
+			Color c = glintHold < 0 && i != shineIndex ? Color.LightGray : Color.White;
+			int ipx = (int)currentWordPath[i].X;
+			int ipy = (int)currentWordPath[i].Y;
+			board[ipx, ipy].Draw(ipx, ipy, c);
 		}
 
 		DrawArrows(spriteBatch, word);
@@ -365,7 +353,7 @@ public class Board
 		Vector2 scorePosition = new(sandTimer.Right + 10, Dice.ImageSize * height);
 		spriteBatch.DrawString(smallFont, $"Score: {score}", scorePosition, Color.Black);
 
-		Rectangle aiScoreRect = shuffleDie.getDrawPosition(0, height);
+		Rectangle aiScoreRect = Dice.GetDrawPosition(0, height);
 		Vector2 aiScorePosition = new(5, aiScoreRect.Bottom);
 		spriteBatch.DrawString(smallFont, $"AI Score: {aiScore}", aiScorePosition, Color.Black);
 
