@@ -62212,7 +62212,6 @@ communionable
 communional
 communionist
 communions
-communiqu
 communique
 communiques
 communis
@@ -96610,7 +96609,6 @@ embus
 embush
 embusk
 embuskin
-embusqu
 embusque
 embussed
 embussing
@@ -175427,7 +175425,6 @@ manostatic
 manpack
 manpower
 manpowers
-manqu
 manque
 manquee
 manqueller
@@ -231578,7 +231575,6 @@ piptonychia
 pipunculid
 pipunculidae
 pipy
-piqu
 piquable
 piquance
 piquancies
@@ -266841,7 +266837,6 @@ risp
 risper
 rispetto
 risposta
-risqu
 risque
 risquee
 riss

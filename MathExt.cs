@@ -7,7 +7,7 @@ namespace WordBoogie;
 public static class MathExt
 {
 
-	private static readonly Random random = new Random();
+	private static readonly Random random = new();
 
 	/// <summary>
 	/// I got this method from

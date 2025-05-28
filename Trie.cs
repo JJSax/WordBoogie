@@ -20,28 +20,29 @@ public class Trie
 
 	public void Insert(string word)
 	{
-		var node = root;
-		foreach (var ch in word)
+		TrieNode node = root;
+		foreach (char ch in word)
 		{
-			if (!node.Children.ContainsKey(ch))
+			if (!node.Children.TryGetValue(ch, out TrieNode value))
 			{
-				node.Children[ch] = new TrieNode();
+				value = new TrieNode();
+				node.Children[ch] = value;
 			}
-			node = node.Children[ch];
+			node = value;
 		}
 		node.IsEndOfWord = true;
 	}
 
 	public bool Search(string word)
 	{
-		var node = root;
-		foreach (var ch in word)
+		TrieNode node = root;
+		foreach (char ch in word)
 		{
-			if (!node.Children.ContainsKey(ch))
+			if (!node.Children.TryGetValue(ch, out TrieNode value))
 			{
 				return false;
 			}
-			node = node.Children[ch];
+			node = value;
 		}
 		return node.IsEndOfWord;
 	}

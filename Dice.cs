@@ -8,9 +8,8 @@ public class Dice
 {
 	private const int squareImgDiceSize = 80;
 
-	//! Fix Q usage
 	private static readonly char[] alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
-	private static readonly int[] letter_weights = [78,20,40,38,110,14,30,23,86,2,10,53,27,72,61,28,2,73,87,67,33,10,9,3,16,4];
+	private static readonly int[] letter_weights = [78, 20, 40, 38, 110, 14, 30, 23, 86, 2, 10, 53, 27, 72, 61, 28, 2, 73, 87, 67, 33, 10, 9, 3, 16, 4];
 	private static readonly int weightSum = letter_weights.Sum();
 	//todo letter score values
 	private static Texture2D diceTexture;
@@ -22,7 +21,8 @@ public class Dice
 
 	public int LetterIndex { get; private set; }
 
-	public static void Init(SpriteBatch sprite_batch, Texture2D dice_texture) {
+	public static void Init(SpriteBatch sprite_batch, Texture2D dice_texture)
+	{
 		spriteBatch = sprite_batch;
 		diceTexture = dice_texture;
 

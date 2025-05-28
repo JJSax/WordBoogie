@@ -61,6 +61,8 @@ public class Board
 	BoogieState gameState;
 	readonly Random random = new();
 
+	private void ResetTimer() => sandRemaining = TimeSpan.FromMinutes(3);
+
 	public Board(GameWindow window, Texture2D dice)
 	{
 		board = new Dice[width, height];
@@ -77,7 +79,7 @@ public class Board
 
 		Rectangle drawPos = shuffleDie.getDrawPosition(0, height);
 		sandTimer = new Rectangle(drawPos.X + 100, drawPos.Y, 40, 80);
-		sandRemaining = TimeSpan.FromMinutes(3);
+		ResetTimer();
 		UpdateSand();
 
 		MouseExt.LeftMousePressed += AttemptShuffle;
@@ -107,7 +109,7 @@ public class Board
 
 		aiBoardWords = [];
 
-		int[] odds = [0,0,0, 2, 4, 6, 10, 12, 15, 20, 21, 22, 23, 25, 30];
+		int[] odds = [0, 0, 0, 2, 4, 6, 10, 12, 15, 20, 21, 22, 23, 25, 30];
 
 		if (aiScore >= score + 20)
 			odds[3] = 3;
@@ -219,7 +221,7 @@ public class Board
 
 		currentWord = "";
 		aiWordIndex = 0;
-		sandRemaining = TimeSpan.FromMinutes(3);
+		ResetTimer();
 	}
 
 	private void UpdateScores()
@@ -284,7 +286,7 @@ public class Board
 		int diceSize = Dice.ImageSize;
 		Vector2 offset = new(diceSize / 2, diceSize / 2);
 		List<Vector2> currentPath = solver.Paths[word];
-		for (int i = 0; i < word.Length - 1; i++)
+		for (int i = 0; i < currentPath.Count - 1; i++)
 		{
 			Vector2 startPoint = currentPath[i];
 			Vector2 endPoint = currentPath[i + 1];
@@ -355,8 +357,8 @@ public class Board
 
 		if (currentWord != null)
 		{
-		Vector2 position = new(5, gameWindow.ClientBounds.Height - 56);
-		spriteBatch.DrawString(largeFont, currentWord, position, Color.Black);
+			Vector2 position = new(5, gameWindow.ClientBounds.Height - 56);
+			spriteBatch.DrawString(largeFont, currentWord, position, Color.Black);
 		}
 
 
