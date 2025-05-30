@@ -14,7 +14,7 @@ public class Dice
 	//todo letter score values
 	private static Texture2D diceTexture;
 	private static Rectangle[] letter_rects = new Rectangle[26];
-	private static Rectangle shuffleRect = new(160, 80, 80, 80);
+	private static Rectangle shuffleRect = new(ImageSize * 2, ImageSize, ImageSize, ImageSize);
 	private static SpriteBatch spriteBatch;
 
 	private Rectangle quad;
@@ -29,7 +29,7 @@ public class Dice
 		letter_rects = new Rectangle[alphabet.Length];
 		for (int i = 0; i < alphabet.Length; i++)
 		{
-			letter_rects[i] = new Rectangle(i * 80, 0, 80, 80);
+			letter_rects[i] = new Rectangle(i * ImageSize, 0, ImageSize, ImageSize);
 		}
 	}
 
@@ -43,22 +43,12 @@ public class Dice
 
 	public void Draw(int x, int y, Color color)
 	{
-		spriteBatch.Draw(diceTexture, new Vector2(x * squareImgDiceSize, y * squareImgDiceSize), quad, color);
-	}
-
-	public void Draw(int x, int y)
-	{
-		spriteBatch.Draw(diceTexture, new Vector2(x * squareImgDiceSize, y * squareImgDiceSize), quad, Color.LightGray);
-	}
-
-	public void DrawGlint(int x, int y)
-	{
-		spriteBatch.Draw(diceTexture, new Vector2(x * squareImgDiceSize, y * squareImgDiceSize), quad, Color.White);
+		spriteBatch.Draw(diceTexture, new Vector2(x * ImageSize, y * ImageSize), quad, color);
 	}
 
 	public static Rectangle GetDrawPosition(int x, int y)
 	{
-		return new Rectangle(x * squareImgDiceSize, y * squareImgDiceSize, squareImgDiceSize, squareImgDiceSize);
+		return new Rectangle(x * ImageSize, y * ImageSize, ImageSize, ImageSize);
 	}
 
 	public void MakeShuffleDice() => quad = shuffleRect;

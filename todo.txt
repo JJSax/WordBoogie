@@ -1,0 +1,16 @@
+Add stats
+	longest found word
+	highest session score
+	highest round score
+
+settings
+	use letter values
+	use sound / music
+
+
+letter value
+
+sounds (Make "WordBoogie" make sense)
+
+show "all" words in round.
+	show disclaimer that all words are not vetted

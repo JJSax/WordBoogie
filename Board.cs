@@ -41,7 +41,7 @@ public class Board
 	/// <summary>
 	/// All the words contained on this particular board.
 	/// </summary>
-	List<string> allBoardWords;
+	HashSet<string> allBoardWords;
 	/// <summary>
 	/// The list of words the ai found
 	/// </summary>
@@ -78,7 +78,7 @@ public class Board
 		shuffleDie.MakeShuffleDice();
 
 		Rectangle drawPos = Dice.GetDrawPosition(0, height);
-		sandTimer = new Rectangle(drawPos.X + 100, drawPos.Y, 40, 80);
+		sandTimer = new Rectangle(drawPos.X + 100, drawPos.Y, 40, Dice.ImageSize);
 		ResetTimer();
 		UpdateSand();
 
@@ -100,12 +100,12 @@ public class Board
 		gameState = BoogieState.playing;
 
 		diceTexture = dice;
-		arrowTexture = new(240, 80, Dice.ImageSize, Dice.ImageSize);
+		arrowTexture = new(Dice.ImageSize * 3, Dice.ImageSize, Dice.ImageSize, Dice.ImageSize);
 	}
 
 	private void FindWords()
 	{
-		allBoardWords = solver.FindAllWords(board).ToList();
+		allBoardWords = solver.FindAllWords(board);
 
 		aiBoardWords = [];
 
@@ -339,7 +339,7 @@ public class Board
 	{
 		spriteBatch.Draw(sandTexture, sandTimer, Color.Gray);
 		spriteBatch.Draw(sandTexture, sand, Color.Yellow);
-		shuffleDie.DrawGlint(0, height);
+		shuffleDie.Draw(0, height, Color.White);
 
 		DrawLetterBoard(spriteBatch);
 
@@ -359,7 +359,7 @@ public class Board
 
 
 		int ind = 0;
-		const int leftX = width * 80 + 20;
+		const int rightX = width * 80 + 20;
 		const int columnCapacity = 16;
 		const int textHeight = 20;
 
@@ -368,7 +368,7 @@ public class Board
 			Color wordColor = Color.Black;
 			if (currentWord == entry) wordColor = Color.Crimson;
 			Vector2 pos = new(
-				leftX + (ind / columnCapacity * 150),
+				rightX + (ind / columnCapacity * 150),
 				ind % columnCapacity * textHeight
 			);
 			if (gameState == BoogieState.scoreNegotiation && aiBoardWords.Contains(entry))
