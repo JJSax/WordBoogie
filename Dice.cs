@@ -15,6 +15,7 @@ public class Dice
 	private static Texture2D diceTexture;
 	private static Rectangle[] letter_rects = new Rectangle[26];
 	private static Rectangle shuffleRect = new(ImageSize * 2, ImageSize, ImageSize, ImageSize);
+	private static Rectangle blankRect = new(ImageSize, ImageSize, ImageSize, ImageSize);
 	private static SpriteBatch spriteBatch;
 
 	private Rectangle quad;
@@ -52,6 +53,7 @@ public class Dice
 	}
 
 	public void MakeShuffleDice() => quad = shuffleRect;
+	public void MakeBlankDice() => quad = blankRect;
 	public char GetLetter => alphabet[LetterIndex];
 	public static int ImageSize => squareImgDiceSize;
 	public Rectangle GetQuad => quad;

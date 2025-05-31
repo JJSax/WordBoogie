@@ -4,11 +4,13 @@
   <Platform>DesktopGL</Platform>
   <Config />
   <SourceFiles>
+    <File>g:/Programs/C#/MonoGame/WordBoogie/Content/Arial.spritefont</File>
     <File>g:/Programs/C#/MonoGame/WordBoogie/Content/Dice.png</File>
     <File>g:/Programs/C#/MonoGame/WordBoogie/Content/RobotoMono-Medium-large.spritefont</File>
     <File>g:/Programs/C#/MonoGame/WordBoogie/Content/RobotoMono-Medium-small.spritefont</File>
   </SourceFiles>
   <DestFiles>
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />

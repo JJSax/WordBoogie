@@ -6,11 +6,11 @@ namespace WordBoogie;
 
 public class Game1 : Game
 {
-	private GraphicsDeviceManager _graphics;
+	private readonly GraphicsDeviceManager _graphics;
 	private SpriteBatch _spriteBatch;
 
 	Board board;
-	MouseExt mouseExt = MouseExt.Instance;
+	readonly MouseExt mouseExt = MouseExt.Instance;
 
 	public Game1()
 	{
@@ -33,11 +33,12 @@ public class Game1 : Game
 
 		SpriteFont largeFont = Content.Load<SpriteFont>("RobotoMono-Medium-large");
 		SpriteFont smallFont = Content.Load<SpriteFont>("RobotoMono-Medium-small");
+		SpriteFont hugeFont = Content.Load<SpriteFont>("Arial");
 		Texture2D primitiveTexture = new(GraphicsDevice, 1, 1);
 		primitiveTexture.SetData([Color.White]);
 
 		board = new Board(Window, dice);
-		board.AddContent(primitiveTexture, largeFont, smallFont);
+		board.AddContent(primitiveTexture, largeFont, smallFont, hugeFont);
 	}
 
 	protected override void Update(GameTime gameTime)

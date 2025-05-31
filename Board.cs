@@ -11,12 +11,12 @@ namespace WordBoogie;
 
 public class Board
 {
-
 	const int width = 4;
 	const int height = 4;
 
 	readonly Dice[,] board;
 	readonly Dice shuffleDie;
+	readonly Dice blankDie;
 	private readonly Texture2D diceTexture;
 	private Rectangle arrowTexture;
 	private Texture2D sandTexture;
@@ -24,6 +24,7 @@ public class Board
 	private Rectangle sand;
 	private TimeSpan sandRemaining;
 	private static GameWindow gameWindow;
+	private SpriteFont hugeFont;
 	private SpriteFont largeFont;
 	private SpriteFont smallFont;
 	private readonly BoogieSolver solver;
@@ -50,13 +51,21 @@ public class Board
 
 	private int score = 0;
 	private int aiScore = 0;
-	private readonly int[] wordLengthScores = [0, 0, 1, 1, 1, 2, 3, 4, 5, 6, 7];
+	private readonly int[] wordLengthScores = [0, 0, 1, 1, 1, 2, 3, 4, 5, 6, 7, 8, 9];
 
 	private int glintLetterIndex = 0;
 	private const float GLINTTIME = 0.4f;
 	private float glintTime = GLINTTIME;
 	private const float GLINTHOLD = 1.5f;
 	private float glintHold = 0f;
+
+	private float timeInTimer = 1;
+	private int timeIn = 2;
+
+	public delegate void DrawDiceGrid(SpriteBatch spriteBatch);
+	public DrawDiceGrid Draw;
+	public delegate void UpdateBoard(GameTime gameTime);
+	public UpdateBoard Update;
 
 	BoogieState gameState;
 	readonly Random random = new();
@@ -76,6 +85,9 @@ public class Board
 
 		shuffleDie = new Dice();
 		shuffleDie.MakeShuffleDice();
+
+		blankDie = new Dice();
+		blankDie.MakeBlankDice();
 
 		Rectangle drawPos = Dice.GetDrawPosition(0, height);
 		sandTimer = new Rectangle(drawPos.X + 100, drawPos.Y, 40, Dice.ImageSize);
@@ -97,7 +109,9 @@ public class Board
 		solver = new(File.ReadLines(dictionaryPath), userWordList);
 		FindWords();
 
-		gameState = BoogieState.playing;
+		gameState = BoogieState.timeIn;
+		Draw += DrawTimeIn;
+		Update += UpdateTimeIn;
 
 		diceTexture = dice;
 		arrowTexture = new(Dice.ImageSize * 3, Dice.ImageSize, Dice.ImageSize, Dice.ImageSize);
@@ -129,8 +143,9 @@ public class Board
 			}
 		}
 	}
-	public void AddContent(Texture2D timerTexture, SpriteFont LargeFont, SpriteFont SmallFont)
+	public void AddContent(Texture2D timerTexture, SpriteFont LargeFont, SpriteFont SmallFont, SpriteFont HugeFont)
 	{
+		hugeFont = HugeFont;
 		largeFont = LargeFont;
 		smallFont = SmallFont;
 		sandTexture = timerTexture;
@@ -201,11 +216,23 @@ public class Board
 
 	private void AttemptShuffle(Point position)
 	{
-		if (Dice.GetDrawPosition(0, height).Contains(position))
+		if (Dice.GetDrawPosition(0, height).Contains(position) && (gameState == BoogieState.playing || gameState == BoogieState.scoreNegotiation))
+		{
+			Update += UpdateTimeIn;
+			Draw += DrawTimeIn;
+
+			Update -= UpdateGame;
+			Draw -= DrawPlayingBoard;
+
+			gameState = BoogieState.timeIn;
+			timeInTimer = 1;
+			timeIn = 2;
+
 			Shuffle();
+		}
 	}
 
-	public void Shuffle()
+	private void Shuffle()
 	{
 		for (int i = 0; i < width; i++)
 		{
@@ -244,7 +271,7 @@ public class Board
 		sand = new Rectangle(sandTimer.X + 5, sandTimer.Y + topOffset, sandTimer.Width - 10, sandTimer.Height - topOffset);
 	}
 
-	public void Update(GameTime gameTime)
+	public void UpdateGame(GameTime gameTime)
 	{
 		float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
 		if (currentWord != null && gameState == BoogieState.scoreNegotiation)
@@ -281,6 +308,27 @@ public class Board
 		}
 	}
 
+	public void UpdateTimeIn(GameTime gt)
+	{
+		timeInTimer -= (float)gt.ElapsedGameTime.TotalSeconds;
+		if (timeInTimer <= 0)
+		{
+			timeIn--;
+			timeInTimer += 1;
+
+			if (timeIn < 1)
+			{
+				Update -= UpdateTimeIn;
+				Draw -= DrawTimeIn;
+
+				Update += UpdateGame;
+				Draw += DrawPlayingBoard;
+
+				gameState = BoogieState.playing;
+			}
+		}
+	}
+
 	private void DrawArrows(SpriteBatch spriteBatch, string word)
 	{
 		int diceSize = Dice.ImageSize;
@@ -304,7 +352,19 @@ public class Board
 		}
 	}
 
-	public void DrawLetterBoard(SpriteBatch spriteBatch)
+	private void DrawTimeIn(SpriteBatch spriteBatch)
+	{
+		for (int i = 0; i < width; i++)
+		{
+			for (int j = 0; j < height; j++)
+			{
+				blankDie.Draw(i, j, Color.White);
+			}
+		}
+		spriteBatch.DrawString(hugeFont, "Get Ready", new(400, 200), Color.White);
+	}
+
+	private void DrawLetterBoard(SpriteBatch spriteBatch)
 	{
 		string word = aiBoardWords.ElementAtOrDefault(aiWordIndex);
 		bool shouldHighlight = word != null && gameState == BoogieState.scoreNegotiation;
@@ -335,7 +395,7 @@ public class Board
 		DrawArrows(spriteBatch, word);
 	}
 
-	public void Draw(SpriteBatch spriteBatch)
+	public void DrawPlayingBoard(SpriteBatch spriteBatch)
 	{
 		spriteBatch.Draw(sandTexture, sandTimer, Color.Gray);
 		spriteBatch.Draw(sandTexture, sand, Color.Yellow);

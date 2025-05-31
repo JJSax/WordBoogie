@@ -3,6 +3,6 @@ namespace WordBoogie;
 public enum BoogieState
 {
 	playing,
-	timeOut,
+	timeIn,
 	scoreNegotiation
 }
