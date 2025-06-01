@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
@@ -143,12 +144,16 @@ public class Board
 			}
 		}
 	}
-	public void AddContent(Texture2D timerTexture, SpriteFont LargeFont, SpriteFont SmallFont, SpriteFont HugeFont)
+
+	public void AddContent(ContentManager content, GraphicsDevice graphics)
 	{
-		hugeFont = HugeFont;
-		largeFont = LargeFont;
-		smallFont = SmallFont;
-		sandTexture = timerTexture;
+		largeFont = content.Load<SpriteFont>("RobotoMono-Medium-large");
+		smallFont = content.Load<SpriteFont>("RobotoMono-Medium-small");
+		hugeFont = content.Load<SpriteFont>("Arial");
+
+		Texture2D primitiveTexture = new(graphics, 1, 1);
+		primitiveTexture.SetData([Color.White]);
+		sandTexture = primitiveTexture;
 	}
 
 	private void KeyboardInput(object sender, InputKeyEventArgs args)

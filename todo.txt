@@ -7,7 +7,6 @@ settings
 	use letter values
 	use sound / music
 
-
 letter value
 
 sounds (Make "WordBoogie" make sense)

@@ -31,14 +31,8 @@ public class Game1 : Game
 		Texture2D dice = Content.Load<Texture2D>("Dice");
 		Dice.Init(_spriteBatch, dice);
 
-		SpriteFont largeFont = Content.Load<SpriteFont>("RobotoMono-Medium-large");
-		SpriteFont smallFont = Content.Load<SpriteFont>("RobotoMono-Medium-small");
-		SpriteFont hugeFont = Content.Load<SpriteFont>("Arial");
-		Texture2D primitiveTexture = new(GraphicsDevice, 1, 1);
-		primitiveTexture.SetData([Color.White]);
-
 		board = new Board(Window, dice);
-		board.AddContent(primitiveTexture, largeFont, smallFont, hugeFont);
+		board.AddContent(Content, GraphicsDevice);
 	}
 
 	protected override void Update(GameTime gameTime)
