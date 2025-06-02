@@ -1,3 +1,64 @@
-.vscode/*
-obj/*
-bin/*
+#####################
+# MonoGame Projects #
+#####################
+
+# Ignore compiled content (MonoGame Content Pipeline)
+Content/bin/
+Content/obj/
+
+# If using MGCB Editor (newer MonoGame projects)
+*.mgcb.cache
+
+# Ignore temporary build and debug files
+bin/
+obj/
+
+# Ignore user-specific settings (Visual Studio)
+*.user
+*.suo
+*.userprefs
+
+# MonoDevelop IDE files
+*.pidb
+
+# Rider IDE files
+.idea/
+*.sln.iml
+
+# Ignore package restore info
+packages/
+*.nupkg
+project.lock.json
+project.assets.json
+
+# Logs and debug output
+*.log
+
+# Ignore build results
+*.exe
+*.dll
+*.pdb
+
+# Ignore file system noise
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Ignore backup & temp files
+*.bak
+*.tmp
+*.swp
+*~
+
+# Visual Studio Code settings
+.vscode/
+
+###########################
+# Optional Unity Crossover
+# (if using Unity + MonoGame)
+###########################
+Library/
+Temp/
+Build/
+obj/
+*.csproj.user
