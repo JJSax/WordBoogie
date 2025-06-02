@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -53,6 +54,7 @@ public class Board
 	private int score = 0;
 	private int aiScore = 0;
 	private readonly int[] wordLengthScores = [0, 0, 1, 1, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+	private readonly Dictionary<int, SoundEffect> Sounds = [];
 
 	private int glintLetterIndex = 0;
 	private const float GLINTTIME = 0.4f;
@@ -154,6 +156,13 @@ public class Board
 		Texture2D primitiveTexture = new(graphics, 1, 1);
 		primitiveTexture.SetData([Color.White]);
 		sandTexture = primitiveTexture;
+
+		Sounds.Add(3, content.Load<SoundEffect>("3"));
+		Sounds.Add(4, content.Load<SoundEffect>("4"));
+		Sounds.Add(5, content.Load<SoundEffect>("5"));
+		Sounds.Add(6, content.Load<SoundEffect>("6"));
+		Sounds.Add(7, content.Load<SoundEffect>("7"));
+		Sounds.Add(8, content.Load<SoundEffect>("8p"));
 	}
 
 	private void KeyboardInput(object sender, InputKeyEventArgs args)
@@ -204,6 +213,8 @@ public class Board
 
 				wordList.Add(currentWord);
 				score += wordLengthScores.ElementAt(currentWord.Length);
+
+				Sounds[(int)MathF.Min(8, currentWord.Length)].Play();
 			}
 			currentWord = "";
 		}
