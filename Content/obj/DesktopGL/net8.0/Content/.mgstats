@@ -8,5 +8,6 @@ Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Siz
 "G:/Programs/C#/MonoGame/WordBoogie/Content/Arial.spritefont","G:/Programs/C#/MonoGame/WordBoogie/Content/bin/DesktopGL/Content/Arial.xnb","FontDescriptionProcessor","SpriteFontContent",2068,267298,0.3318924
 "G:/Programs/C#/MonoGame/WordBoogie/Content/chime.mp3","G:/Programs/C#/MonoGame/WordBoogie/Content/bin/DesktopGL/Content/chime.xnb","SoundEffectProcessor","SoundEffectContent",59136,354921,0.3421248
 "G:/Programs/C#/MonoGame/WordBoogie/Content/Dice.png","G:/Programs/C#/MonoGame/WordBoogie/Content/bin/DesktopGL/Content/Dice.xnb","TextureProcessor","Texture2DContent",48296,1331285,0.2995645
+"G:/Programs/C#/MonoGame/WordBoogie/Content/rareLetter.mp3","G:/Programs/C#/MonoGame/WordBoogie/Content/bin/DesktopGL/Content/rareLetter.xnb","SoundEffectProcessor","SoundEffectContent",45975,253545,0.3251212
 "G:/Programs/C#/MonoGame/WordBoogie/Content/RobotoMono-Medium-large.spritefont","G:/Programs/C#/MonoGame/WordBoogie/Content/bin/DesktopGL/Content/RobotoMono-Medium-large.xnb","FontDescriptionProcessor","SpriteFontContent",2084,136226,0.1690598
 "G:/Programs/C#/MonoGame/WordBoogie/Content/RobotoMono-Medium-small.spritefont","G:/Programs/C#/MonoGame/WordBoogie/Content/bin/DesktopGL/Content/RobotoMono-Medium-small.xnb","FontDescriptionProcessor","SpriteFontContent",2084,37922,0.0660771

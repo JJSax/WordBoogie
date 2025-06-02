@@ -54,8 +54,10 @@ public class Board
 	private int score = 0;
 	private int aiScore = 0;
 	private readonly int[] wordLengthScores = [0, 0, 1, 1, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+	private static readonly HashSet<char> rareLetters = ['Q', 'V', 'W', 'X', 'Y', 'Z'];
 	private readonly Dictionary<int, SoundEffect> Sounds = [];
 	private SoundEffect NewWord;
+	private SoundEffect RareLetterUsed;
 
 	private int glintLetterIndex = 0;
 	private const float GLINTTIME = 0.4f;
@@ -166,6 +168,7 @@ public class Board
 		Sounds.Add(8, content.Load<SoundEffect>("8p"));
 
 		NewWord = content.Load<SoundEffect>("chime");
+		RareLetterUsed = content.Load<SoundEffect>("rareLetter");
 	}
 
 	private void KeyboardInput(object sender, InputKeyEventArgs args)
@@ -218,6 +221,11 @@ public class Board
 
 				wordList.Add(currentWord);
 				score += wordLengthScores.ElementAt(currentWord.Length);
+
+				foreach (char c in currentWord)
+				{
+					if (rareLetters.Contains(c)) RareLetterUsed.Play(0.25f, 0, 0);
+				}
 
 				Sounds[(int)MathF.Min(8, currentWord.Length)].Play();
 			}

@@ -4,7 +4,6 @@
   <Platform>DesktopGL</Platform>
   <Config />
   <SourceFiles>
-    <File>g:/Programs/C#/MonoGame/WordBoogie/Content/chime.mp3</File>
     <File>g:/Programs/C#/MonoGame/WordBoogie/Content/3.wav</File>
     <File>g:/Programs/C#/MonoGame/WordBoogie/Content/4.wav</File>
     <File>g:/Programs/C#/MonoGame/WordBoogie/Content/5.wav</File>
@@ -12,11 +11,24 @@
     <File>g:/Programs/C#/MonoGame/WordBoogie/Content/7.wav</File>
     <File>g:/Programs/C#/MonoGame/WordBoogie/Content/8p.wav</File>
     <File>g:/Programs/C#/MonoGame/WordBoogie/Content/Arial.spritefont</File>
+    <File>g:/Programs/C#/MonoGame/WordBoogie/Content/chime.mp3</File>
     <File>g:/Programs/C#/MonoGame/WordBoogie/Content/Dice.png</File>
+    <File>g:/Programs/C#/MonoGame/WordBoogie/Content/rareLetter.mp3</File>
     <File>g:/Programs/C#/MonoGame/WordBoogie/Content/RobotoMono-Medium-large.spritefont</File>
     <File>g:/Programs/C#/MonoGame/WordBoogie/Content/RobotoMono-Medium-small.spritefont</File>
   </SourceFiles>
   <DestFiles>
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
   </DestFiles>
 </SourceFileCollection>
