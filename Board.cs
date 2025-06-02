@@ -114,6 +114,7 @@ public class Board
 		userWordList = new(FileManager.ReadWords().Concat(File.ReadLines(realWordPath)));
 
 		solver = new(File.ReadLines(dictionaryPath), userWordList);
+		FindWords();
 
 		gameState = BoogieState.timeIn;
 		Draw += DrawTimeIn;
