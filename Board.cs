@@ -58,6 +58,7 @@ public class Board
 	private readonly Dictionary<int, SoundEffect> Sounds = [];
 	private SoundEffect NewWord;
 	private SoundEffect RareLetterUsed;
+	private SoundEffect Start;
 
 	private int glintLetterIndex = 0;
 	private const float GLINTTIME = 0.4f;
@@ -113,7 +114,6 @@ public class Board
 		userWordList = new(FileManager.ReadWords().Concat(File.ReadLines(realWordPath)));
 
 		solver = new(File.ReadLines(dictionaryPath), userWordList);
-		FindWords();
 
 		gameState = BoogieState.timeIn;
 		Draw += DrawTimeIn;
@@ -169,6 +169,9 @@ public class Board
 
 		NewWord = content.Load<SoundEffect>("chime");
 		RareLetterUsed = content.Load<SoundEffect>("rareLetter");
+		Start = content.Load<SoundEffect>("start");
+
+		Start.Play(); // Will have to move if/when there is a start menu.
 	}
 
 	private void KeyboardInput(object sender, InputKeyEventArgs args)
@@ -256,6 +259,8 @@ public class Board
 			gameState = BoogieState.timeIn;
 			timeInTimer = 1;
 			timeIn = 2;
+
+			Start.Play();
 
 			Shuffle();
 		}
@@ -437,7 +442,6 @@ public class Board
 			Vector2 position = new(5, gameWindow.ClientBounds.Height - 56);
 			spriteBatch.DrawString(largeFont, currentWord, position, Color.Black);
 		}
-
 
 		Vector2 scorePosition = new(sandTimer.Right + 10, Dice.ImageSize * height);
 		spriteBatch.DrawString(smallFont, $"Score: {score}", scorePosition, Color.Black);

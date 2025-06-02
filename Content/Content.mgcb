@@ -94,3 +94,9 @@
 /processorParam:TextureFormat=Compressed
 /build:RobotoMono-Medium-small.spritefont
 
+#begin start.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:start.mp3
+

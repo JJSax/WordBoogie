@@ -16,8 +16,10 @@
     <File>G:/Programs/C#/MonoGame/WordBoogie/Content/rareLetter.mp3</File>
     <File>G:/Programs/C#/MonoGame/WordBoogie/Content/RobotoMono-Medium-large.spritefont</File>
     <File>G:/Programs/C#/MonoGame/WordBoogie/Content/RobotoMono-Medium-small.spritefont</File>
+    <File>G:/Programs/C#/MonoGame/WordBoogie/Content/start.mp3</File>
   </SourceFiles>
   <DestFiles>
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
