@@ -4,6 +4,7 @@
   <Platform>DesktopGL</Platform>
   <Config />
   <SourceFiles>
+    <File>g:/Programs/C#/MonoGame/WordBoogie/Content/chime.mp3</File>
     <File>g:/Programs/C#/MonoGame/WordBoogie/Content/3.wav</File>
     <File>g:/Programs/C#/MonoGame/WordBoogie/Content/4.wav</File>
     <File>g:/Programs/C#/MonoGame/WordBoogie/Content/5.wav</File>
@@ -16,15 +17,6 @@
     <File>g:/Programs/C#/MonoGame/WordBoogie/Content/RobotoMono-Medium-small.spritefont</File>
   </SourceFiles>
   <DestFiles>
-    <File xsi:nil="true" />
-    <File xsi:nil="true" />
-    <File xsi:nil="true" />
-    <File xsi:nil="true" />
-    <File xsi:nil="true" />
-    <File xsi:nil="true" />
-    <File xsi:nil="true" />
-    <File xsi:nil="true" />
-    <File xsi:nil="true" />
     <File xsi:nil="true" />
   </DestFiles>
 </SourceFileCollection>

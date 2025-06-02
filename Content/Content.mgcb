@@ -56,6 +56,12 @@
 /processorParam:TextureFormat=Compressed
 /build:Arial.spritefont
 
+#begin chime.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:chime.mp3
+
 #begin Dice.png
 /importer:TextureImporter
 /processor:TextureProcessor

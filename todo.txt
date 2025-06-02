@@ -9,7 +9,9 @@ settings
 
 letter value
 
-sounds (Make "WordBoogie" make sense)
++sounds (Make "WordBoogie" make sense)
+	+add new word sound
+	 add rare letter use sound
 
 show "all" words in round.
 	show disclaimer that all words are not vetted
