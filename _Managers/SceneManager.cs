@@ -28,12 +28,17 @@ public static class SceneManager
 
 		var scene = _sceneStack.Pop();
 
+		scene.Exit();
 		if (scene.IsLoaded)
 			scene.UnloadContent();
 	}
 
 	public static void Switch(Scene scene)
 	{
+		Scene last = _sceneStack.Peek();
+		last.Exit();
+		last.UnloadContent();
+
 		_sceneStack.Clear();
 
 		if (!scene.IsLoaded)
