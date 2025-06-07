@@ -2,85 +2,41 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using MonoGame.Extended;
 
 namespace WordBoogie;
 
 public class Board
 {
-	const int width = 4;
-	const int height = 4;
+	public const int width = 4;
+	public const int height = 4;
 
-	readonly Dice[,] board;
-	readonly Dice shuffleDie;
-	readonly Dice blankDie;
-	private readonly Texture2D diceTexture;
-	private Rectangle arrowTexture;
-	private Texture2D sandTexture;
-	private Rectangle sandTimer;
-	private Rectangle sand;
-	private TimeSpan sandRemaining;
-	private static GameWindow gameWindow;
-	private SpriteFont hugeFont;
-	private SpriteFont largeFont;
-	private SpriteFont smallFont;
-	private readonly BoogieSolver solver;
+	public readonly Dice[,] board;
+
+	public BoogieSolver Solver { get; private set; }
 
 	/// <summary>
 	/// The list of words in this game that the player found.
 	/// </summary>
-	private readonly List<string> wordList = [];
-	private string currentWord = "";
+	public List<string> WordList { get; set; } = [];
 
 	/// <summary>
 	/// All the words that are either confirmed as real, or use has used and accepted to be real.
 	/// </summary>
-	readonly HashSet<string> userWordList;
+	public HashSet<string> UserWordList { get; private set; }
 	/// <summary>
 	/// All the words contained on this particular board.
 	/// </summary>
-	HashSet<string> allBoardWords;
+	public HashSet<string> AllBoardWords { get; private set; }
 	/// <summary>
 	/// The list of words the ai found
 	/// </summary>
-	private List<string> aiBoardWords;
-	private int aiWordIndex = 0;
-
-	private int score = 0;
-	private int aiScore = 0;
-	private readonly int[] wordLengthScores = [0, 0, 1, 1, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-	private static readonly HashSet<char> rareLetters = ['Q', 'V', 'W', 'X', 'Y', 'Z'];
-	private readonly Dictionary<int, SoundEffect> Sounds = [];
-	private SoundEffect NewWord;
-	private SoundEffect RareLetterUsed;
-	private SoundEffect Start;
-
-	private int glintLetterIndex = 0;
-	private const float GLINTTIME = 0.4f;
-	private float glintTime = GLINTTIME;
-	private const float GLINTHOLD = 1.5f;
-	private float glintHold = 0f;
-
-	private float timeInTimer = 1;
-	private int timeIn = 2;
-
-	public delegate void DrawDiceGrid(SpriteBatch spriteBatch);
-	public DrawDiceGrid Draw;
-	public delegate void UpdateBoard(GameTime gameTime);
-	public UpdateBoard Update;
-
-	BoogieState gameState;
+	public List<string> AIBoardWords { get; private set; }
 	readonly Random random = new();
+	private static readonly HashSet<char> rareLetters = ['Q', 'V', 'W', 'X', 'Y', 'Z'];
 
-	private void ResetTimer() => sandRemaining = TimeSpan.FromMinutes(3);
-
-	public Board(GameWindow window, Texture2D dice)
+	public Board()
 	{
+
 		board = new Dice[width, height];
 		for (int i = 0; i < width; i++)
 		{
@@ -90,186 +46,43 @@ public class Board
 			}
 		}
 
-		shuffleDie = new Dice();
-		shuffleDie.MakeShuffleDice();
-
-		blankDie = new Dice();
-		blankDie.MakeBlankDice();
-
-		Rectangle drawPos = Dice.GetDrawPosition(0, height);
-		sandTimer = new Rectangle(drawPos.X + 100, drawPos.Y, 40, Dice.ImageSize);
-		ResetTimer();
-		UpdateSand();
-
-		MouseExt.LeftMousePressed += AttemptShuffle;
-
-		gameWindow = window;
-		gameWindow.TextInput += TextInput;
-		gameWindow.KeyDown += KeyboardInput;
-
 		// Get paths to binary data folder
 		string dictionaryPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data", "words_alpha_jj.txt");
 		string realWordPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data", "confirmed_words.txt");
 
-		userWordList = new(FileManager.ReadWords().Concat(File.ReadLines(realWordPath)));
+		UserWordList = new(FileManager.ReadWords().Concat(File.ReadLines(realWordPath)));
 
-		solver = new(File.ReadLines(dictionaryPath), userWordList);
-		FindWords();
+		WordList = [];
+		AIBoardWords = [];
+		AllBoardWords = [];
 
-		gameState = BoogieState.timeIn;
-		Draw += DrawTimeIn;
-		Update += UpdateTimeIn;
-
-		diceTexture = dice;
-		arrowTexture = new(Dice.ImageSize * 3, Dice.ImageSize, Dice.ImageSize, Dice.ImageSize);
+		Solver = new(File.ReadLines(dictionaryPath), UserWordList);
+		FindAllWords();
 	}
 
-	private void FindWords()
+	public void FindAllWords() => AllBoardWords = Solver.FindAllWords(board);
+
+	public int SetAIWords(int[] odds, int[] wordLengthScores)
 	{
-		allBoardWords = solver.FindAllWords(board);
+		int score = 0;
 
-		aiBoardWords = [];
-
-		int[] odds = [0, 0, 0, 2, 4, 6, 10, 12, 15, 20, 21, 22, 23, 25, 30];
-
-		if (aiScore >= score + 20)
-			odds[3] = 3;
-		if (score >= aiScore + 20)
-			odds[3] = 1;
-
-		foreach (string word in allBoardWords)
+		foreach (string word in AllBoardWords)
 		{
-			if (solver.ConfirmedTrie.Search(word))
+			if (Solver.ConfirmedTrie.Search(word))
 			{
 				int choice = random.Next(odds[word.Length]);
 				if (choice == 0)
 				{
-					aiBoardWords.Add(word);
-					aiScore += wordLengthScores[word.Length];
+					AIBoardWords.Add(word);
+					score += wordLengthScores[word.Length];
 				}
 			}
 		}
+
+		return score;
 	}
 
-	public void AddContent()
-	{
-		ContentManager content = Globals.Content;
-
-		largeFont = content.Load<SpriteFont>("RobotoMono-Medium-large");
-		smallFont = content.Load<SpriteFont>("RobotoMono-Medium-small");
-		hugeFont = content.Load<SpriteFont>("Arial");
-
-		Texture2D primitiveTexture = new(Globals.GraphicsDevice, 1, 1);
-		primitiveTexture.SetData([Color.White]);
-		sandTexture = primitiveTexture;
-
-		Sounds.Add(3, content.Load<SoundEffect>("3"));
-		Sounds.Add(4, content.Load<SoundEffect>("4"));
-		Sounds.Add(5, content.Load<SoundEffect>("5"));
-		Sounds.Add(6, content.Load<SoundEffect>("6"));
-		Sounds.Add(7, content.Load<SoundEffect>("7"));
-		Sounds.Add(8, content.Load<SoundEffect>("8p"));
-
-		NewWord = content.Load<SoundEffect>("chime");
-		RareLetterUsed = content.Load<SoundEffect>("rareLetter");
-		Start = content.Load<SoundEffect>("start");
-
-		Start.Play(); // Will have to move if/when there is a start menu.
-	}
-
-	private void KeyboardInput(object sender, InputKeyEventArgs args)
-	{
-		if (gameState != BoogieState.scoreNegotiation || aiBoardWords.Count == 0) return;
-
-		Keys key = args.Key;
-		bool validKey = false;
-
-		switch (key)
-		{
-			case Keys.Up:
-				validKey = true;
-				Common.Wrap(++aiWordIndex, 0, aiBoardWords.Count, out aiWordIndex);
-				break;
-			case Keys.Down:
-				validKey = true;
-				Common.Wrap(--aiWordIndex, 0, aiBoardWords.Count, out aiWordIndex);
-				break;
-		}
-
-		if (validKey)
-		{
-			glintLetterIndex = 0;
-			glintTime = GLINTTIME;
-			glintHold = 0;
-		}
-
-		currentWord = aiBoardWords[aiWordIndex];
-	}
-
-	private void TextInput(object sender, TextInputEventArgs args)
-	{
-		if (gameState != BoogieState.playing) return;
-
-		Keys key = args.Key;
-		KeyboardState keys = Keyboard.GetState();
-
-		if (key == Keys.Enter && currentWord.Length > 0)
-		{
-			if (allBoardWords.Contains(currentWord) && !wordList.Contains(currentWord))
-			{
-				if (!solver.WordInConfirmed(currentWord))
-				{
-					FileManager.AppendWord(currentWord);
-					userWordList.Add(currentWord);
-
-					NewWord.Play(0.25f, 0, 0);
-				}
-
-				wordList.Add(currentWord);
-				score += wordLengthScores.ElementAt(currentWord.Length);
-
-				foreach (char c in currentWord)
-				{
-					if (rareLetters.Contains(c)) RareLetterUsed.Play(0.25f, 0, 0);
-				}
-
-				Sounds[(int)MathF.Min(8, currentWord.Length)].Play();
-			}
-			currentWord = "";
-		}
-		else if (key == Keys.Back && (keys.IsKeyDown(Keys.LeftControl) || keys.IsKeyDown(Keys.RightControl)) && currentWord.Length > 0)
-			// Ctrl+Backspace
-			currentWord = "";
-		else if (key == Keys.Back && currentWord.Length > 0)
-			currentWord = currentWord.Substring(0, currentWord.Length - 1);
-		else if (char.IsLetter(args.Character))
-			currentWord += char.ToUpper(args.Character);
-
-		// Optional: Debug output
-		// Debug.WriteLine($"Current Word: {currentWord}");
-	}
-
-	private void AttemptShuffle(Point position)
-	{
-		if (Dice.GetDrawPosition(0, height).Contains(position) && (gameState == BoogieState.playing || gameState == BoogieState.scoreNegotiation))
-		{
-			Update += UpdateTimeIn;
-			Draw += DrawTimeIn;
-
-			Update -= UpdateGame;
-			Draw -= DrawPlayingBoard;
-
-			gameState = BoogieState.timeIn;
-			timeInTimer = 1;
-			timeIn = 2;
-
-			Start.Play();
-
-			Shuffle();
-		}
-	}
-
-	private void Shuffle()
+	public void Shuffle()
 	{
 		for (int i = 0; i < width; i++)
 		{
@@ -278,207 +91,48 @@ public class Board
 				board[i, j].ChooseLetter();
 			}
 		}
-		wordList.Clear();
 
-		FindWords();
-		gameState = BoogieState.playing;
-
-		currentWord = "";
-		aiWordIndex = 0;
-		ResetTimer();
+		WordList.Clear();
+		FindAllWords();
 	}
 
-	private void UpdateScores()
+	public bool IsNewWord(string word)
 	{
-		foreach (string word in aiBoardWords)
+		if (!Solver.WordInConfirmed(word))
 		{
-			if (wordList.Contains(word))
+			FileManager.AppendWord(word);
+			UserWordList.Add(word);
+			return true;
+		}
+		return false;
+	}
+
+	public bool EnterUserWord(string word, out bool isNew)
+	{
+		isNew = false;
+		if (AllBoardWords.Contains(word) && !WordList.Contains(word))
+		{
+			if (!Solver.WordInConfirmed(word))
 			{
-				int wordScore = wordLengthScores[word.Length];
-				score -= wordScore;
-				aiScore -= wordScore;
+				FileManager.AppendWord(word);
+				UserWordList.Add(word);
+				isNew = true;
 			}
+
+			WordList.Add(word);
+
+			return true;
 		}
+
+		return false;
 	}
 
-	private void UpdateSand()
+	public static bool RareLetterUsed(string word)
 	{
-		TimeSpan min3 = TimeSpan.FromMinutes(3);
-		int topOffset = (int)((min3 - sandRemaining) / min3 * sandTimer.Height);
-		sand = new Rectangle(sandTimer.X + 5, sandTimer.Y + topOffset, sandTimer.Width - 10, sandTimer.Height - topOffset);
+		foreach (char c in word)
+		{
+			if (rareLetters.Contains(c)) return true;
+		}
+		return false;
 	}
-
-	public void UpdateGame(GameTime gameTime)
-	{
-		float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
-		if (currentWord != null && gameState == BoogieState.scoreNegotiation)
-		{
-			glintTime -= dt;
-			glintHold -= dt;
-			if (glintHold <= 0 && glintHold + dt > 0)
-			{
-				glintLetterIndex = 0;
-				glintTime = GLINTTIME;
-			}
-			if (glintTime <= 0 && glintHold <= 0)
-			{
-				glintLetterIndex++;
-				glintTime = GLINTTIME;
-				if (glintLetterIndex >= currentWord.Length)
-				{
-					glintLetterIndex = 0;
-					glintHold = GLINTHOLD;
-				}
-			}
-		}
-
-		if (gameState != BoogieState.playing) return;
-		sandRemaining -= gameTime.ElapsedGameTime;
-		UpdateSand();
-
-		if (sandRemaining <= TimeSpan.Zero)
-		{
-			gameState = BoogieState.scoreNegotiation;
-			currentWord = aiBoardWords.ElementAtOrDefault(aiWordIndex);
-
-			UpdateScores();
-		}
-	}
-
-	public void UpdateTimeIn(GameTime gt)
-	{
-		timeInTimer -= (float)gt.ElapsedGameTime.TotalSeconds;
-		if (timeInTimer <= 0)
-		{
-			timeIn--;
-			timeInTimer += 1;
-
-			if (timeIn < 1)
-			{
-				Update -= UpdateTimeIn;
-				Draw -= DrawTimeIn;
-
-				Update += UpdateGame;
-				Draw += DrawPlayingBoard;
-
-				gameState = BoogieState.playing;
-			}
-		}
-	}
-
-	private void DrawArrows(SpriteBatch spriteBatch, string word)
-	{
-		int diceSize = Dice.ImageSize;
-		Vector2 offset = new(diceSize / 2, diceSize / 2);
-		List<Vector2> currentPath = solver.Paths[word];
-		for (int i = 0; i < currentPath.Count - 1; i++)
-		{
-			Vector2 startPoint = currentPath[i];
-			Vector2 endPoint = currentPath[i + 1];
-			Vector2 midPoint = (startPoint + endPoint) / 2 * diceSize + offset;
-			Rectangle midRect = new(
-				(int)midPoint.X,
-				(int)midPoint.Y,
-				diceSize, diceSize
-			);
-			float angle = (endPoint - startPoint).ToAngle();
-			spriteBatch.Draw(
-				diceTexture, midRect, arrowTexture,
-				Color.White, angle, offset, SpriteEffects.None, 0f
-			);
-		}
-	}
-
-	private void DrawTimeIn(SpriteBatch spriteBatch)
-	{
-		for (int i = 0; i < width; i++)
-		{
-			for (int j = 0; j < height; j++)
-			{
-				blankDie.Draw(i, j, Color.White);
-			}
-		}
-		spriteBatch.DrawString(hugeFont, "Get Ready", new(400, 200), Color.White);
-	}
-
-	private void DrawLetterBoard(SpriteBatch spriteBatch)
-	{
-		string word = aiBoardWords.ElementAtOrDefault(aiWordIndex);
-		bool shouldHighlight = word != null && gameState == BoogieState.scoreNegotiation;
-
-		Color color = gameState == BoogieState.scoreNegotiation ? Color.LightSlateGray : Color.White;
-		for (int i = 0; i < width; i++)
-		{
-			for (int j = 0; j < height; j++)
-			{
-				board[i, j]?.Draw(i, j, color);
-			}
-		}
-
-		if (!shouldHighlight) return;
-
-		List<Vector2> currentWordPath = solver.Paths[word];
-		int total = currentWordPath.Count;
-		int shineIndex = total - glintLetterIndex - 1; // 0-based from front
-
-		for (int i = total - 1; i >= 0; i--)
-		{
-			Color c = glintHold < 0 && i != shineIndex ? Color.LightGray : Color.White;
-			int ipx = (int)currentWordPath[i].X;
-			int ipy = (int)currentWordPath[i].Y;
-			board[ipx, ipy].Draw(ipx, ipy, c);
-		}
-
-		DrawArrows(spriteBatch, word);
-	}
-
-	public void DrawPlayingBoard(SpriteBatch spriteBatch)
-	{
-		spriteBatch.Draw(sandTexture, sandTimer, Color.Gray);
-		spriteBatch.Draw(sandTexture, sand, Color.Yellow);
-		shuffleDie.Draw(0, height, Color.White);
-
-		DrawLetterBoard(spriteBatch);
-
-		if (currentWord != null)
-		{
-			Vector2 position = new(5, gameWindow.ClientBounds.Height - 56);
-			spriteBatch.DrawString(largeFont, currentWord, position, Color.Black);
-		}
-
-		Vector2 scorePosition = new(sandTimer.Right + 10, Dice.ImageSize * height);
-		spriteBatch.DrawString(smallFont, $"Score: {score}", scorePosition, Color.Black);
-
-		Rectangle aiScoreRect = Dice.GetDrawPosition(0, height);
-		Vector2 aiScorePosition = new(5, aiScoreRect.Bottom);
-		spriteBatch.DrawString(smallFont, $"AI Score: {aiScore}", aiScorePosition, Color.Black);
-
-
-		int ind = 0;
-		const int rightX = width * 80 + 20;
-		const int columnCapacity = 16;
-		const int textHeight = 20;
-
-		foreach (string entry in wordList)
-		{
-			Color wordColor = Color.Black;
-			if (currentWord == entry) wordColor = Color.Crimson;
-			Vector2 pos = new(
-				rightX + (ind / columnCapacity * 150),
-				ind % columnCapacity * textHeight
-			);
-			if (gameState == BoogieState.scoreNegotiation && aiBoardWords.Contains(entry))
-			{
-				Vector2 wordSize = smallFont.MeasureString(entry);
-				Vector2 offset = new(0, 4);
-				Vector2 startPos = pos + new Vector2(0, wordSize.Y / 2) - offset;
-				Vector2 endPos = startPos + new Vector2(wordSize.X, 12);
-				spriteBatch.DrawLine(startPos, endPos, Color.AntiqueWhite, 2f);
-			}
-			spriteBatch.DrawString(smallFont, entry, pos, wordColor);
-			ind++;
-		}
-	}
-
-
 }

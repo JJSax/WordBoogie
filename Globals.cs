@@ -11,15 +11,17 @@ public static class Globals
 	public static GraphicsDevice GraphicsDevice { get; set; }
 	public static Point WindowSize { get; private set; } = new(2000, 1200);
 	public static Point CenterWindow { get; private set; } = WindowSize / new Point(2, 2);
+	public static GameWindow Window { get; private set; }
 
 	private static ContentManager _content;
 	public static ContentManager Content => _content ?? throw new InvalidOperationException("ContentManager not initialized");
 
-	public static void Initialize(ContentManager content, GraphicsDevice graphicsDevice, SpriteBatch spriteBatch)
+	public static void Initialize(ContentManager content, GraphicsDevice graphicsDevice, SpriteBatch spriteBatch, GameWindow gameWindow)
 	{
 		_content = content;
 		GraphicsDevice = graphicsDevice;
 		SpriteBatch = spriteBatch;
+		Window = gameWindow;
 		UpdateWindowSize();
 	}
 

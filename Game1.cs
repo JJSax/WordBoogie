@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using WordBoogie.Scenes;
 
 namespace WordBoogie;
 
@@ -9,7 +10,7 @@ public class Game1 : Game
 	private readonly GraphicsDeviceManager _graphics;
 	private SpriteBatch _spriteBatch;
 
-	Board board;
+	BoogieScene board;
 	readonly MouseExt mouseExt = MouseExt.Instance;
 
 	public Game1()
@@ -28,13 +29,15 @@ public class Game1 : Game
 	{
 		_spriteBatch = new SpriteBatch(GraphicsDevice);
 
-		Globals.Initialize(Content, GraphicsDevice, _spriteBatch);
+		Globals.Initialize(Content, GraphicsDevice, _spriteBatch, Window);
 
 		Texture2D dice = Content.Load<Texture2D>("Dice");
 		Dice.Init(dice);
 
-		board = new Board(Window, dice);
-		board.AddContent();
+		board = new BoogieScene();
+		board.Initialize();
+		board.LoadContent();
+		board.Enter(null);
 	}
 
 	protected override void Update(GameTime gameTime)
