@@ -6,8 +6,8 @@ namespace WordBoogie.Scenes;
 public abstract class Scene
 {
 	private bool _loaded;
-	protected bool IsLoaded => _loaded;
-	public virtual void Initialize() { }
+	public bool IsLoaded => _loaded;
+
 	public virtual void LoadContent()
 	{
 		_loaded = true;

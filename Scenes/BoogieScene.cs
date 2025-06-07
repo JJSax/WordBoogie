@@ -54,7 +54,7 @@ public class BoogieScene : Scene
 	private int aiScore = 0;
 	private readonly int[] wordLengthScores = [0, 0, 1, 1, 1, 2, 3, 4, 5, 6, 7, 8, 9];
 
-	public override void Initialize()
+	public BoogieScene()
 	{
 		board = new Board();
 
@@ -70,8 +70,6 @@ public class BoogieScene : Scene
 
 		cDraw += DrawTimeIn;
 		cUpdate += UpdateTimeIn;
-
-		base.Initialize();
 	}
 
 	public override void Enter(Scene from)
