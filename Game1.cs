@@ -28,11 +28,13 @@ public class Game1 : Game
 	{
 		_spriteBatch = new SpriteBatch(GraphicsDevice);
 
+		Globals.Initialize(Content, GraphicsDevice, _spriteBatch);
+
 		Texture2D dice = Content.Load<Texture2D>("Dice");
-		Dice.Init(_spriteBatch, dice);
+		Dice.Init(dice);
 
 		board = new Board(Window, dice);
-		board.AddContent(Content, GraphicsDevice);
+		board.AddContent(GraphicsDevice);
 	}
 
 	protected override void Update(GameTime gameTime)

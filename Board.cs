@@ -151,8 +151,10 @@ public class Board
 		}
 	}
 
-	public void AddContent(ContentManager content, GraphicsDevice graphics)
+	public void AddContent(GraphicsDevice graphics)
 	{
+		ContentManager content = Globals.Content;
+
 		largeFont = content.Load<SpriteFont>("RobotoMono-Medium-large");
 		smallFont = content.Load<SpriteFont>("RobotoMono-Medium-small");
 		hugeFont = content.Load<SpriteFont>("Arial");

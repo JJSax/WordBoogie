@@ -16,15 +16,13 @@ public class Dice
 	private static Rectangle[] letter_rects = new Rectangle[26];
 	private static Rectangle shuffleRect = new(ImageSize * 2, ImageSize, ImageSize, ImageSize);
 	private static Rectangle blankRect = new(ImageSize, ImageSize, ImageSize, ImageSize);
-	private static SpriteBatch spriteBatch;
 
 	private Rectangle quad;
 
 	public int LetterIndex { get; private set; }
 
-	public static void Init(SpriteBatch sprite_batch, Texture2D dice_texture)
+	public static void Init(Texture2D dice_texture)
 	{
-		spriteBatch = sprite_batch;
 		diceTexture = dice_texture;
 
 		letter_rects = new Rectangle[alphabet.Length];
@@ -44,7 +42,7 @@ public class Dice
 
 	public void Draw(int x, int y, Color color)
 	{
-		spriteBatch.Draw(diceTexture, new Vector2(x * ImageSize, y * ImageSize), quad, color);
+		Globals.SpriteBatch.Draw(diceTexture, new Vector2(x * ImageSize, y * ImageSize), quad, color);
 	}
 
 	public static Rectangle GetDrawPosition(int x, int y)
