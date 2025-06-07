@@ -34,7 +34,7 @@ public class Game1 : Game
 		Dice.Init(dice);
 
 		board = new Board(Window, dice);
-		board.AddContent(GraphicsDevice);
+		board.AddContent();
 	}
 
 	protected override void Update(GameTime gameTime)

@@ -151,7 +151,7 @@ public class Board
 		}
 	}
 
-	public void AddContent(GraphicsDevice graphics)
+	public void AddContent()
 	{
 		ContentManager content = Globals.Content;
 
@@ -159,7 +159,7 @@ public class Board
 		smallFont = content.Load<SpriteFont>("RobotoMono-Medium-small");
 		hugeFont = content.Load<SpriteFont>("Arial");
 
-		Texture2D primitiveTexture = new(graphics, 1, 1);
+		Texture2D primitiveTexture = new(Globals.GraphicsDevice, 1, 1);
 		primitiveTexture.SetData([Color.White]);
 		sandTexture = primitiveTexture;
 
