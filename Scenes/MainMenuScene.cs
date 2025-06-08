@@ -34,14 +34,14 @@ public class MainMenuScene : Scene
 
 	public override void Enter()
 	{
-		MouseExt.LeftMousePressed += AttemptStart;
-		MouseExt.LeftMousePressed += AttemptSettings;
+		InputManager.OnLeftMousePressed += AttemptStart;
+		InputManager.OnLeftMousePressed += AttemptSettings;
 	}
 
 	public override void Exit()
 	{
-		MouseExt.LeftMousePressed -= AttemptStart;
-		MouseExt.LeftMousePressed -= AttemptSettings;
+		InputManager.OnLeftMousePressed -= AttemptStart;
+		InputManager.OnLeftMousePressed -= AttemptSettings;
 	}
 
 	private void AttemptStart(Point position)

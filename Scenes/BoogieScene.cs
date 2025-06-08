@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
+using WordBoogie._Managers;
 using WordBoogie.Utils;
 
 namespace WordBoogie.Scenes;
@@ -74,7 +75,7 @@ public class BoogieScene : Scene
 	{
 		Globals.Window.TextInput += TextInput;
 		Globals.Window.KeyDown += KeyboardInput;
-		MouseExt.LeftMousePressed += AttemptShuffle;
+		InputManager.OnLeftMousePressed += AttemptShuffle;
 
 		ResetTimer();
 		UpdateSand();
@@ -91,7 +92,7 @@ public class BoogieScene : Scene
 	{
 		Globals.Window.TextInput -= TextInput;
 		Globals.Window.KeyDown -= KeyboardInput;
-		MouseExt.LeftMousePressed -= AttemptShuffle;
+		InputManager.OnLeftMousePressed -= AttemptShuffle;
 
 		base.Exit();
 	}

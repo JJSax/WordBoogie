@@ -11,8 +11,6 @@ public class Game1 : Game
 	private readonly GraphicsDeviceManager _graphics;
 	private SpriteBatch _spriteBatch;
 
-	readonly MouseExt mouseExt = MouseExt.Instance;
-
 	public Game1()
 	{
 		_graphics = new GraphicsDeviceManager(this);
@@ -42,7 +40,7 @@ public class Game1 : Game
 		if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
 			Exit();
 
-		mouseExt.Update();
+		InputManager.Update();
 		SceneManager.Update(gameTime);
 
 		base.Update(gameTime);
