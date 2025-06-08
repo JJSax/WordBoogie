@@ -1,4 +1,3 @@
-using System;
 using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -12,6 +11,7 @@ public class MainMenuScene : Scene
 
 	TextButton Start;
 	ImageButton Settings;
+	BoogieScene boogieScene;
 
 	public MainMenuScene()
 	{
@@ -29,40 +29,27 @@ public class MainMenuScene : Scene
 			new(50, 0, 80, 80),
 			new(ws.X - 80, ws.Y - 80, 60, 60)
 		);
-
 	}
 
-	public override void Enter()
-	{
-		InputManager.OnLeftMousePressed += AttemptStart;
-		InputManager.OnLeftMousePressed += AttemptSettings;
-	}
+	public override void Enter() { }
 
-	public override void Exit()
-	{
-		InputManager.OnLeftMousePressed -= AttemptStart;
-		InputManager.OnLeftMousePressed -= AttemptSettings;
-	}
-
-	private void AttemptStart(Point position)
-	{
-		if (Start.Contains(position))
-		{
-			SceneManager.Push(new BoogieScene());
-		}
-	}
-
-	private void AttemptSettings(Point position)
-	{
-		if (Settings.Contains(position))
-		{
-			Debug.WriteLine("OPEN SETTINGS");
-			// SceneManager.Push(Settings)
-		}
-	}
+	public override void Exit() { }
 
 	public override void Update(GameTime gameTime)
 	{
+		if (InputManager.LeftMousePressed)
+		{
+			if (Settings.Contains(InputManager.MousePosition))
+			{
+				Debug.WriteLine("OPEN SETTINGS");
+			}
+
+			if (Start.Contains(InputManager.MousePosition))
+			{
+				boogieScene ??= new BoogieScene();
+				SceneManager.Push(boogieScene);
+			}
+		}
 	}
 
 	public override void Draw(SpriteBatch spriteBatch)

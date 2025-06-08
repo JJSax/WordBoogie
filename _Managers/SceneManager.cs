@@ -29,7 +29,7 @@ public static class SceneManager
 		var scene = _sceneStack.Pop();
 
 		scene.Exit();
-		if (scene.IsLoaded)
+		if (scene.IsLoaded && !scene.ForceLoad)
 			scene.UnloadContent();
 	}
 

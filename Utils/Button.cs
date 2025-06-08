@@ -19,9 +19,22 @@ public class ImageButton(Texture2D texture, Rectangle sourcePosition, Rectangle 
 	private readonly Texture2D _texture = texture;
 	private readonly Rectangle _source = sourcePosition;
 
-	public void Draw(SpriteBatch spriteBatch)
+	public void Draw(SpriteBatch spriteBatch, float rotation = 0)
 	{
-		spriteBatch.Draw(_texture, Where, _source, Color.White);
+		Vector2 origin = new(_source.Width / 2f, _source.Height / 2f);
+		Vector2 position = new(Where.X + Where.Width / 2f, Where.Y + Where.Height / 2f);
+
+		spriteBatch.Draw(
+			_texture,
+			position,
+			_source,
+			Color.White,
+			rotation,
+			origin,
+			new Vector2(Where.Width / (float)_source.Width, Where.Height / (float)_source.Height),
+			SpriteEffects.None,
+			0f
+		);
 	}
 }
 

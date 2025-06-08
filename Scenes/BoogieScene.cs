@@ -28,6 +28,7 @@ public class BoogieScene : Scene
 	private SoundEffect Start;
 
 	private ImageButton shuffle;
+	private ImageButton back;
 	readonly Dice blankDie;
 
 	private Rectangle sandTimer;
@@ -66,9 +67,6 @@ public class BoogieScene : Scene
 		Rectangle drawPos = Dice.GetDrawPosition(0, Board.height);
 		sandTimer = new Rectangle(drawPos.X + 100, drawPos.Y, 40, Dice.ImageSize);
 		arrowTexture = new(Dice.ImageSize * 3, Dice.ImageSize, Dice.ImageSize, Dice.ImageSize);
-
-		cDraw += DrawTimeIn;
-		cUpdate += UpdateTimeIn;
 	}
 
 	public override void Enter(Scene from)
@@ -76,6 +74,9 @@ public class BoogieScene : Scene
 		Globals.Window.TextInput += TextInput;
 		Globals.Window.KeyDown += KeyboardInput;
 		InputManager.OnLeftMousePressed += AttemptShuffle;
+		InputManager.OnLeftMousePressed += TryBackPress;
+		cDraw += DrawTimeIn;
+		cUpdate += UpdateTimeIn;
 
 		ResetTimer();
 		UpdateSand();
@@ -93,12 +94,16 @@ public class BoogieScene : Scene
 		Globals.Window.TextInput -= TextInput;
 		Globals.Window.KeyDown -= KeyboardInput;
 		InputManager.OnLeftMousePressed -= AttemptShuffle;
+		cDraw -= DrawTimeIn;
+		cUpdate -= UpdateTimeIn;
+		InputManager.OnLeftMousePressed -= TryBackPress;
 
 		base.Exit();
 	}
 
 	public override void LoadContent()
 	{
+		ForceLoad = true;
 		ContentManager content = Globals.Content;
 
 		largeFont = content.Load<SpriteFont>("RobotoMono-Medium-large");
@@ -127,6 +132,13 @@ public class BoogieScene : Scene
 			diceTexture,
 			new(dieSize * 2, dieSize, dieSize, dieSize),
 			Dice.GetDrawPosition(0, Board.height)
+		);
+
+		Point ws = Globals.WindowSize;
+		back = new(
+			diceTexture,
+			new(dieSize * 3, dieSize, dieSize, dieSize),
+			new(ws.X - 80, ws.Y - 80, 60, 60)
 		);
 
 		base.LoadContent();
@@ -441,5 +453,17 @@ public class BoogieScene : Scene
 	public override void Draw(SpriteBatch spriteBatch)
 	{
 		cDraw(spriteBatch);
+		back.Draw(spriteBatch, MathF.PI / 2);
+	}
+
+	public void TryBackPress(Point position)
+	{
+		if (back.Contains(position))
+		{
+			if (gameState == BoogieState.scoreNegotiation)
+			{
+				SceneManager.Pop();
+			}
+		}
 	}
 }

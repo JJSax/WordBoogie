@@ -7,6 +7,7 @@ public abstract class Scene
 {
 	private bool _loaded;
 	public bool IsLoaded => _loaded;
+	public bool ForceLoad = false;
 
 	public virtual void LoadContent()
 	{
