@@ -47,7 +47,7 @@ public static class SceneManager
 		if (!scene.IsLoaded)
 			scene.LoadContent();
 
-		scene.Enter(null);
+		scene.Enter();
 		_sceneStack.Push(scene);
 	}
 
@@ -59,24 +59,8 @@ public static class SceneManager
 
 	public static void Draw(SpriteBatch spriteBatch)
 	{
-		var scenesToDraw = _sceneStack.Reverse().ToList();
-		bool drawUnder = true;
 
-		foreach (var scene in scenesToDraw)
-		{
-			if (drawUnder || scene.ShouldDrawUnderneath)
-			{
-				scene.Draw(spriteBatch);
-			}
-
-			if (!scene.ShouldDrawUnderneath)
-				drawUnder = false;
-		}
-
-		// Optionally: handle overlay passes separately
-		foreach (var scene in scenesToDraw)
-		{
-			scene.DrawOverlay(spriteBatch);
-		}
+		var scene = _sceneStack.Peek();
+		scene.Draw(spriteBatch);
 	}
 }

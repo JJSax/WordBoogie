@@ -26,7 +26,7 @@ public class BoogieScene : Scene
 	private SoundEffect RareLetterUsed;
 	private SoundEffect Start;
 
-	private Button shuffle;
+	private ImageButton shuffle;
 	readonly Dice blankDie;
 
 	private Rectangle sandTimer;

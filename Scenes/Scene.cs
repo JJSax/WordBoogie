@@ -17,6 +17,7 @@ public abstract class Scene
 		_loaded = false;
 	}
 
+	public virtual void Enter() { }
 	public virtual void Enter(Scene from) { }
 	public virtual void Exit() { }
 

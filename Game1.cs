@@ -34,7 +34,7 @@ public class Game1 : Game
 		Texture2D dice = Content.Load<Texture2D>("Dice");
 		Dice.Init(dice);
 
-		SceneManager.Switch(new BoogieScene());
+		SceneManager.Switch(new MainMenuScene());
 	}
 
 	protected override void Update(GameTime gameTime)

@@ -12,4 +12,6 @@ letter value
 show "all" words in round.
 	show disclaimer that all words are not vetted
 
+Add particles for new found words
+
 Consider moving Blank Die (before letters populate) to a new scene
