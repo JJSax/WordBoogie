@@ -9,9 +9,7 @@ settings
 
 letter value
 
-+sounds (Make "WordBoogie" make sense)
-	+add new word sound
-	+add rare letter use sound
-
 show "all" words in round.
 	show disclaimer that all words are not vetted
+
+Consider moving Blank Die (before letters populate) to a new scene

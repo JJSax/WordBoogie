@@ -12,7 +12,7 @@ namespace WordBoogie.Scenes;
 
 public class BoogieScene : Scene
 {
-	Board board;
+	readonly Board board;
 
 	private readonly Dictionary<int, SoundEffect> Sounds = [];
 	private Texture2D diceTexture;
@@ -25,8 +25,8 @@ public class BoogieScene : Scene
 	private SoundEffect RareLetterUsed;
 	private SoundEffect Start;
 
-	Dice shuffleDie;
-	Dice blankDie;
+	readonly Dice shuffleDie;
+	readonly Dice blankDie;
 
 	private Rectangle sandTimer;
 	private Rectangle sand;

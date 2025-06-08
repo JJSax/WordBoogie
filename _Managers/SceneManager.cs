@@ -35,9 +35,12 @@ public static class SceneManager
 
 	public static void Switch(Scene scene)
 	{
-		Scene last = _sceneStack.Peek();
-		last.Exit();
-		last.UnloadContent();
+		_sceneStack.TryPeek(out Scene last);
+		if (last != null)
+		{
+			last.Exit();
+			last.UnloadContent();
+		}
 
 		_sceneStack.Clear();
 
