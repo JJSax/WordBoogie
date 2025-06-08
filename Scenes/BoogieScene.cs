@@ -137,7 +137,7 @@ public class BoogieScene : Scene
 		Point ws = Globals.WindowSize;
 		back = new(
 			diceTexture,
-			new(dieSize * 3, dieSize, dieSize, dieSize),
+			new(264, 108, 33, 26),
 			new(ws.X - 80, ws.Y - 80, 60, 60)
 		);
 
