@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
+using WordBoogie.Utils;
 
 namespace WordBoogie.Scenes;
 
@@ -25,7 +26,7 @@ public class BoogieScene : Scene
 	private SoundEffect RareLetterUsed;
 	private SoundEffect Start;
 
-	readonly Dice shuffleDie;
+	private Button shuffle;
 	readonly Dice blankDie;
 
 	private Rectangle sandTimer;
@@ -57,9 +58,6 @@ public class BoogieScene : Scene
 	public BoogieScene()
 	{
 		board = new Board();
-
-		shuffleDie = new Dice();
-		shuffleDie.MakeShuffleDice();
 
 		blankDie = new Dice();
 		blankDie.MakeBlankDice();
@@ -122,6 +120,13 @@ public class BoogieScene : Scene
 		NewWord = content.Load<SoundEffect>("chime");
 		RareLetterUsed = content.Load<SoundEffect>("rareLetter");
 		Start = content.Load<SoundEffect>("start");
+
+		int dieSize = Dice.ImageSize;
+		shuffle = new(
+			diceTexture,
+			new(dieSize * 2, dieSize, dieSize, dieSize),
+			Dice.GetDrawPosition(0, Board.height)
+		);
 
 		base.LoadContent();
 	}
@@ -284,7 +289,7 @@ public class BoogieScene : Scene
 	{
 		spriteBatch.Draw(sandTexture, sandTimer, Color.Gray);
 		spriteBatch.Draw(sandTexture, sand, Color.Yellow);
-		shuffleDie.Draw(0, Board.height, Color.White);
+		shuffle.Draw(spriteBatch);
 
 		DrawLetterBoard(spriteBatch);
 
@@ -394,7 +399,7 @@ public class BoogieScene : Scene
 
 	private void AttemptShuffle(Point position)
 	{
-		if (Dice.GetDrawPosition(0, Board.height).Contains(position) && (gameState == BoogieState.playing || gameState == BoogieState.scoreNegotiation))
+		if (shuffle.Contains(position) && (gameState == BoogieState.playing || gameState == BoogieState.scoreNegotiation))
 		{
 			cUpdate += UpdateTimeIn;
 			cDraw += DrawTimeIn;
