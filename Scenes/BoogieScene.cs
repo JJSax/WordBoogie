@@ -29,7 +29,10 @@ public class BoogieScene : Scene
 
 	private ImageButton shuffle;
 	private ImageButton back;
+	private TextButton NoAnswer;
+	private TextButton YesAnswer;
 	readonly Dice blankDie;
+	bool inConfirmBack = false;
 
 	private Rectangle sandTimer;
 	private Rectangle sand;
@@ -75,16 +78,8 @@ public class BoogieScene : Scene
 		Globals.Window.KeyDown += KeyboardInput;
 		InputManager.OnLeftMousePressed += AttemptShuffle;
 		InputManager.OnLeftMousePressed += TryBackPress;
-		cDraw += DrawTimeIn;
-		cUpdate += UpdateTimeIn;
 
-		ResetTimer();
-		UpdateSand();
-		FindWords();
-
-		gameState = BoogieState.timeIn;
-
-		Start.Play();
+		NewGame();
 
 		base.Enter(from);
 	}
@@ -94,9 +89,13 @@ public class BoogieScene : Scene
 		Globals.Window.TextInput -= TextInput;
 		Globals.Window.KeyDown -= KeyboardInput;
 		InputManager.OnLeftMousePressed -= AttemptShuffle;
+		InputManager.OnLeftMousePressed -= TryBackPress;
 		cDraw -= DrawTimeIn;
 		cUpdate -= UpdateTimeIn;
-		InputManager.OnLeftMousePressed -= TryBackPress;
+		cDraw -= DrawPlayingBoard;
+		cUpdate -= UpdateGame;
+
+		inConfirmBack = false;
 
 		base.Exit();
 	}
@@ -139,6 +138,22 @@ public class BoogieScene : Scene
 			diceTexture,
 			new(264, 108, 33, 26),
 			new(ws.X - 80, ws.Y - 80, 60, 60)
+		);
+
+		Point cw = Globals.CenterWindow;
+		int bWidth = 100;
+		int gap = 20;
+
+		NoAnswer = new(
+			largeFont,
+			"No",
+			new(cw.X - bWidth - gap, cw.Y, bWidth, 50)
+		);
+
+		YesAnswer = new(
+			largeFont,
+			"Yes",
+			new(cw.X + gap, cw.Y, bWidth, 50)
 		);
 
 		base.LoadContent();
@@ -298,6 +313,16 @@ public class BoogieScene : Scene
 		DrawArrows(spriteBatch, word);
 	}
 
+	private void DrawBackConfirmation(SpriteBatch spriteBatch)
+	{
+		NoAnswer.Draw(spriteBatch);
+		YesAnswer.Draw(spriteBatch);
+
+		if (!inConfirmBack || !InputManager.LeftMousePressed) return;
+		if (NoAnswer.Contains(InputManager.MousePosition)) inConfirmBack = false;
+		if (YesAnswer.Contains(InputManager.MousePosition)) SceneManager.Pop();
+	}
+
 	public void DrawPlayingBoard(SpriteBatch spriteBatch)
 	{
 		spriteBatch.Draw(sandTexture, sandTimer, Color.Gray);
@@ -318,6 +343,9 @@ public class BoogieScene : Scene
 		Rectangle aiScoreRect = Dice.GetDrawPosition(0, Board.height);
 		Vector2 aiScorePosition = new(5, aiScoreRect.Bottom);
 		spriteBatch.DrawString(smallFont, $"AI Score: {aiScore}", aiScorePosition, Color.Black);
+
+		if (inConfirmBack)
+			DrawBackConfirmation(spriteBatch);
 
 		int ind = 0;
 		const int rightX = Board.width * 80 + 20;
@@ -410,35 +438,38 @@ public class BoogieScene : Scene
 		// Debug.WriteLine($"Current Word: {currentWord}");
 	}
 
+	private void NewGame()
+	{
+		cUpdate += UpdateTimeIn;
+		cDraw += DrawTimeIn;
+
+		cUpdate -= UpdateGame;
+		cDraw -= DrawPlayingBoard;
+
+		gameState = BoogieState.timeIn;
+		timeInTimer = 1;
+		timeIn = 2;
+
+		Start.Play();
+		ResetTimer();
+
+		board.Shuffle();
+		currentWord = "";
+		aiWordIndex = 0;
+
+		FindWords();
+	}
+
 	private void AttemptShuffle(Point position)
 	{
 		if (shuffle.Contains(position) && (gameState == BoogieState.playing || gameState == BoogieState.scoreNegotiation))
 		{
-			cUpdate += UpdateTimeIn;
-			cDraw += DrawTimeIn;
-
-			cUpdate -= UpdateGame;
-			cDraw -= DrawPlayingBoard;
-
-			gameState = BoogieState.timeIn;
-			timeInTimer = 1;
-			timeIn = 2;
-
-			Start.Play();
-			ResetTimer();
-
-			board.Shuffle();
-			currentWord = "";
-			aiWordIndex = 0;
-
-			FindWords();
+			NewGame();
 		}
 	}
 
 	private void FindWords()
 	{
-		board.FindAllWords();
-
 		int[] odds = [0, 0, 0, 2, 4, 6, 10, 12, 15, 20, 21, 22, 23, 25, 30];
 
 		if (aiScore >= aiScore + 20)
@@ -447,7 +478,6 @@ public class BoogieScene : Scene
 			odds[3] = 1;
 
 		aiScore += board.SetAIWords(odds, wordLengthScores);
-
 	}
 
 	public override void Draw(SpriteBatch spriteBatch)
@@ -463,6 +493,10 @@ public class BoogieScene : Scene
 			if (gameState == BoogieState.scoreNegotiation)
 			{
 				SceneManager.Pop();
+			}
+			else if (gameState == BoogieState.playing)
+			{
+				inConfirmBack = true;
 			}
 		}
 	}

@@ -43,6 +43,8 @@ public class TextButton(SpriteFont font, string text, Rectangle where) : Button(
 	private readonly SpriteFont _font = font;
 	private readonly string _text = text;
 
+	public Color bgColor = Color.DarkBlue;
+
 	public void Draw(SpriteBatch spriteBatch)
 	{
 		var textSize = _font.MeasureString(_text);
@@ -51,6 +53,7 @@ public class TextButton(SpriteFont font, string text, Rectangle where) : Button(
 			Where.Y + (Where.Height - textSize.Y) / 2
 		);
 
+		spriteBatch.FillRectangle(Where, bgColor);
 		spriteBatch.DrawRectangle(Where, Color.White);
 		spriteBatch.DrawString(_font, _text, pos, Color.White);
 	}

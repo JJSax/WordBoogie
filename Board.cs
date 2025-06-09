@@ -57,10 +57,9 @@ public class Board
 		AllBoardWords = [];
 
 		Solver = new(File.ReadLines(dictionaryPath), UserWordList);
-		FindAllWords();
 	}
 
-	public void FindAllWords() => AllBoardWords = Solver.FindAllWords(board);
+	private void FindAllWords() => AllBoardWords = Solver.FindAllWords(board);
 
 	public int SetAIWords(int[] odds, int[] wordLengthScores)
 	{
