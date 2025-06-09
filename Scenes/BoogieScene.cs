@@ -315,6 +315,9 @@ public class BoogieScene : Scene
 
 	private void DrawBackConfirmation(SpriteBatch spriteBatch)
 	{
+		const int width = 300;
+		Point cs = Globals.CenterWindow;
+		spriteBatch.FillRectangle(new(cs.X - width / 2, cs.Y - 25, width, 50 + NoAnswer.Where.Height), Color.DarkViolet);
 		NoAnswer.Draw(spriteBatch);
 		YesAnswer.Draw(spriteBatch);
 
@@ -462,6 +465,7 @@ public class BoogieScene : Scene
 
 	private void AttemptShuffle(Point position)
 	{
+		if (inConfirmBack) return;
 		if (shuffle.Contains(position) && (gameState == BoogieState.playing || gameState == BoogieState.scoreNegotiation))
 		{
 			NewGame();
