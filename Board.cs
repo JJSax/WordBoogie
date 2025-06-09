@@ -65,6 +65,7 @@ public class Board
 	public int SetAIWords(int[] odds, int[] wordLengthScores)
 	{
 		int score = 0;
+		AIBoardWords = [];
 
 		foreach (string word in AllBoardWords)
 		{
