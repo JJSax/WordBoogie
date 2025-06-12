@@ -100,7 +100,11 @@ if __name__ == "__main__":
 	with open("words_alpha_jj.txt", "r") as f:
 		allWords = f.readlines()
 
-	currentIndex = 0
+	currentIndex = 24884 # change to the line you left off on to prevent going over something multiple times.
+
+	if len(allWords) <= currentIndex:
+		quit()
+
 	shouldStop = False
 	while True:
 		while True:
