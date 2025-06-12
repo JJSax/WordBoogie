@@ -1,6 +1,4 @@
 
-#todo add dictionary lookup; save me time.
-
 import msvcrt
 from enum import Enum
 import requests
