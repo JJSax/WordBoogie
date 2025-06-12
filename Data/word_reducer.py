@@ -1,17 +1,47 @@
 
+#todo add dictionary lookup; save me time.
+
 import msvcrt
 from enum import Enum
+import requests
 
 print("Begin reducing words.")
 print("Remove x Word?")
 print("Press 'n' to keep a word in the list.")
 print("Press 'y' to DELETE a word in the list. It will be saved in a separate file in case of mistakes.")
+print("Press 'd' to define. (may take a moment to fetch)")
 print("press 'e' to escape.")
 
 class PromptResponse(Enum):
 	Keep = 1
 	Delete = 2
 	Break = 3
+
+def printDefinitions(word):
+	response = requests.get(f"https://api.dictionaryapi.dev/api/v2/entries/en/{word}")
+
+	if response.status_code != 200:
+		print(f"Word '{word}' not found. HTTP status: {response.status_code}")
+		return
+
+	try:
+		data = response.json()
+		if not isinstance(data, list) or not data or "meanings" not in data[0]:
+			print(f"No valid definitions found for '{word}'.")
+			return
+
+		i = 0
+		for meaning in data[0]["meanings"]:
+			for definition in meaning.get("definitions", []):
+				def_text = definition.get("definition")
+				if def_text:
+					print(f"{i}. {def_text}")
+
+		return
+
+	except (KeyError, ValueError, TypeError) as e:
+		print(f"Error parsing response for '{word}': {e}")
+		return
 
 def promptWord(word) -> PromptResponse:
 	while True:
@@ -23,6 +53,9 @@ def promptWord(word) -> PromptResponse:
 			return PromptResponse.Keep
 		elif char == 'y':
 			return PromptResponse.Delete
+		elif char == 'd':
+			printDefinitions(word)
+
 		elif char == 'e':
 			return PromptResponse.Break
 		else:
@@ -40,6 +73,9 @@ def deleteWord(word, index):
 
 def breakout():
 	print("Halting Operations and Removing words")
+
+	if (len(wordsToMove) == 0): # no need to loop through long lists if nothing needs moved.
+		return
 
 	# loop through sorted wordsToMove in reverse to avoid index shifting
 	# remove that index from allWords and put it in backup file just in case.
@@ -63,7 +99,6 @@ def wordAt(index):
 
 if __name__ == "__main__":
 	allWords = []
-	#! Will need to change from confirmed words
 	with open("words_alpha_jj.txt", "r") as f:
 		allWords = f.readlines()
 
@@ -86,6 +121,7 @@ if __name__ == "__main__":
 
 		response = promptWord(wordAt(currentIndex))
 		if response == PromptResponse.Break:
+			print(f"Stopping at line {currentIndex}")
 			breakout()
 			break
 		elif response == PromptResponse.Keep:
